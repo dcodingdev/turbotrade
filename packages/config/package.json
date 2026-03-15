@@ -1,0 +1,13 @@
+{
+  "name": "@repo/config",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "typescript/*.json"
+  ],
+  "exports": {
+    "./typescript/base.json": "./typescript/base.json",
+    "./typescript/node.json": "./typescript/node.json",
+    "./typescript/nextjs.json": "./typescript/nextjs.json"
+  }
+}
