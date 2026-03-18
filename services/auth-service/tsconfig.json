@@ -18,8 +18,7 @@
     }
   },
   "include": [
-    "src/**/*", 
-    "../../packages/*/src/**/*" // Tell TS to include the shared source files
+    "src" // Tell TS to include the shared source files
   ],
   "exclude": ["node_modules", "dist"]
 }

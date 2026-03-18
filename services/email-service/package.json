@@ -1,0 +1,16 @@
+{
+  "name": "@repo/email-service",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@repo/config": "workspace:*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.30.3"
+}

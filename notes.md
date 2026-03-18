@@ -1,3 +1,11 @@
+cd infrastructure
+cd docker
+
+pnpm turbo run dev --filter=@repo/auth-service --filter=@repo/product-service
+
+docker compose stop
+
+
 multi-vendor-monorepo/
 
 ├── apps/                  

@@ -55,6 +55,9 @@ importers:
       '@repo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -113,6 +116,36 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+
+  services/chat-service:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+
+  services/email-service:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+
+  services/order-service:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+
+  services/payment-service:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+
+  services/product-service:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
 
 packages:
 

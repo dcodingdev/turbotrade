@@ -1,0 +1,13 @@
+{
+  "extends": "@repo/config/typescript/node.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "@repo/types": ["../../packages/types/src/index"],
+      "@repo/logger": ["../../packages/logger/src/index"],
+      "@repo/database": ["../../packages/database/src/index"]
+    }
+  },
+  "include": ["src"]
+}
