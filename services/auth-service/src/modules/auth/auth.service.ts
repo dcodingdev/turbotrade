@@ -1,48 +1,93 @@
-// services/auth-service/src/modules/auth/auth.service.ts
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { RegisterInput, LoginInput } from '@repo/api-contracts';
-import { User, AuthResponse } from '@repo/types';
-import { UserRepository } from '../users/user.repository';
-import logger from '@repo/logger';
+import { UserRepository } from '../users/user.repository.js';
+import { User } from '@repo/types';
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'access_secret';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'refresh_secret';
 
+const mapToUser = (user: any): User => ({
+  _id: user._id.toString(),
+  email: user.email,
+  name: user.name,
+  role: user.role,
+  createdAt: user.createdAt,
+});
+
+// REGISTER
 export const registerUser = async (data: RegisterInput): Promise<User> => {
   const hashedPassword = await bcrypt.hash(data.password, 10);
-  return UserRepository.create({ ...data, password: hashedPassword });
+
+  // Overwrite the plain text password with the hashed one
+  const user = await UserRepository.create({
+    ...data,
+    password: hashedPassword,
+  });
+
+  return mapToUser(user);
 };
 
-export const validateAndGenerateTokens = async (data: LoginInput) => {
+// LOGIN + TOKEN GENERATION
+export const validateAndGenerateTokens = async (
+  data: LoginInput
+): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
   const user = await UserRepository.findByEmail(data.email);
-  if (!user || !(await bcrypt.compare(data.password, user.password))) {
+
+  if (!user || !user.password) {
+    throw new Error('Invalid credentials');
+  }
+
+  const isValid = await bcrypt.compare(data.password, user.password);
+  if (!isValid) {
     throw new Error('Invalid credentials');
   }
 
   const accessToken = jwt.sign(
-    { id: user.id, role: user.role }, 
-    ACCESS_SECRET, 
+    { _id: user._id.toString(), role: user.role, name: user.name,   
+    email: user.email  },
+    ACCESS_SECRET,
     { expiresIn: '15m' }
   );
-  
+
   const refreshToken = jwt.sign(
-    { id: user.id }, 
-    REFRESH_SECRET, 
+    { _id: user._id.toString(), role: user.role, name: user.name,   
+    email: user.email  },
+    REFRESH_SECRET,
     { expiresIn: '7d' }
   );
 
-  return { user, accessToken, refreshToken };
+  return {
+    user: mapToUser(user),
+    accessToken,
+    refreshToken,
+  };
 };
 
-export const refreshSession = async (token: string) => {
-  const decoded = jwt.verify(token, REFRESH_SECRET) as { id: string };
-  const user = await UserRepository.findById(decoded.id);
-  
-  if (!user) throw new Error('User not found');
+// REFRESH SESSION (Kept as is, added error handling)
+export const refreshSession = async (
+  token: string
+): Promise<{ accessToken: string; newRefreshToken: string }> => {
+  try {
+    const decoded = jwt.verify(token, REFRESH_SECRET) as { _id: string };
+    const user = await UserRepository.findById(decoded._id);
 
-  const accessToken = jwt.sign({ id: user.id, role: user.role }, ACCESS_SECRET, { expiresIn: '15m' });
-  const newRefreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, { expiresIn: '7d' });
+    if (!user) throw new Error('User not found');
 
-  return { accessToken, newRefreshToken };
+    const accessToken = jwt.sign(
+      { _id: user._id.toString(), role: user.role },
+      ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    const newRefreshToken = jwt.sign(
+      { _id: user._id.toString() },
+      REFRESH_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return { accessToken, newRefreshToken };
+  } catch (err) {
+    throw new Error('Invalid or expired refresh token');
+  }
 };

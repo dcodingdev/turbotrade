@@ -35,4 +35,4 @@ COPY --from=builder /app .
 
 EXPOSE 4006
 
-CMD ["node", "services/chat-service/dist/index.js"]
+CMD ["node", "services/chat-service/dist/src/server.js"]

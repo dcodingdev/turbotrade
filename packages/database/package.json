@@ -2,6 +2,7 @@
   "name": "@repo/database",
   "version": "1.0.0",
   "description": "",
+  "type":"module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
@@ -12,6 +13,8 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "dependencies": {
-    "mongoose": "^9.3.0"
+    "mongoose": "^9.3.0",
+    "mongoose-aggregate-paginate-v2": "^1.1.4",
+    "@repo/logger": "workspace:*"
   }
 }

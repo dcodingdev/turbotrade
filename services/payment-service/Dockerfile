@@ -34,4 +34,4 @@ ENV NODE_ENV=production
 COPY --from=builder /app .
 
 EXPOSE 4004
-CMD ["node", "services/payment-service/dist/index.js"]
+CMD ["node", "services/payment-service/dist/src/server.js"]

@@ -1,0 +1,33 @@
+FROM node:20-alpine
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+# 1. Copy workspace configuration and root package.json
+# These are required for pnpm to recognize the monorepo structure
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# 2. Copy all package.json files from the entire monorepo 
+# This allows pnpm to install dependencies without needing the full source code yet
+COPY services/auth-service/package.json ./services/auth-service/
+COPY packages/ ./packages/
+
+# 3. Install dependencies
+# We use --no-frozen-lockfile in dev to handle minor version mismatches 
+# caused by the container's Linux environment vs your Windows host.
+RUN pnpm install --no-frozen-lockfile
+
+# 4. Copy the rest of the source code 
+# (Note: In docker-compose, these will be overridden by your volume mounts,
+# but we need them here for the build to be valid)
+COPY . .
+
+# 5. Set the working directory to the specific service
+WORKDIR /app/services/auth-service
+
+EXPOSE 4001
+
+# Use pnpm run dev to trigger your 'tsx watch' script
+CMD ["pnpm", "run", "dev"]

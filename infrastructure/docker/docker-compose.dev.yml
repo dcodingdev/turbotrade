@@ -1,0 +1,140 @@
+
+services:
+  # --- API Gateway ---
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+      - payment-service
+      - email-service
+      - chat-service
+    networks:
+      - app-network
+
+  # --- Microservices (Dev Mode) ---
+  auth-service:
+    build:
+      context: ../../
+      dockerfile: services/auth-service/Dockerfile.dev
+    container_name: auth-service-dev
+  
+    volumes:
+      - ../../:/app
+      # Anonymous volumes to protect the container's node_modules
+      - /app/node_modules
+      - /app/services/auth-service/node_modules
+      # Add this to ensure binaries in the root are accessible
+      - /app/node_modules/.bin:/app/services/auth-service/node_modules/.bin
+    environment:
+      - PORT=4001
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - MONGO_URI=${AUTH_DB_URI}
+    networks:
+      - app-network
+
+  product-service:
+    build:
+      context: ../../
+      dockerfile: services/product-service/Dockerfile.dev
+    container_name: product-service-dev
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/product-service/node_modules
+      - /app/packages/logger/node_modules
+      - /app/packages/database/node_modules
+    environment:
+      - PORT=4002
+      - MONGO_URI=${PRODUCT_DB_URI}
+    networks:
+      - app-network
+
+  order-service:
+    build:
+      context: ../../
+      dockerfile: services/order-service/Dockerfile.dev
+    container_name: order-service-dev
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/order-service/node_modules
+      - /app/packages/rabbitmq/node_modules
+    environment:
+      - PORT=4003
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - MONGO_URI=${ORDER_DB_URI}
+    networks:
+      - app-network
+
+  payment-service:
+    build:
+      context: ../../
+      dockerfile: services/payment-service/Dockerfile.dev
+    container_name: payment-service-dev
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/payment-service/node_modules
+    environment:
+      - PORT=4004
+      - MONGO_URI=${PAYMENT_DB_URI}
+    networks:
+      - app-network
+
+  email-service:
+    build:
+      context: ../../
+      dockerfile: services/email-service/Dockerfile.dev
+    container_name: email-service-dev
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/email-service/node_modules
+      - /app/packages/rabbitmq/node_modules
+    environment:
+      - PORT=4005
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    networks:
+      - app-network
+
+  chat-service:
+    build:
+      context: ../../
+      dockerfile: services/chat-service/Dockerfile.dev
+    container_name: chat-service-dev
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/chat-service/node_modules
+    environment:
+      - PORT=4006
+      - MONGO_URI=${CHAT_DB_URI}
+    networks:
+      - app-network
+
+  # --- Infrastructure ---
+  redis:
+    image: redis/redis-stack-server:latest
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

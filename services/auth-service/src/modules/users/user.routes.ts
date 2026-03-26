@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import { authenticate } from '../../middleware/auth';
-import { getProfile,updateProfile } from './user.controller';
+import { authenticate } from '../../middleware/auth.middleware.js';
+import { getProfile,updateProfile } from './user.controller.js';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * All routes here are protected. 

@@ -34,4 +34,4 @@ ENV NODE_ENV=production
 COPY --from=builder /app .
 
 EXPOSE 4003
-CMD ["node", "services/order-service/dist/index.js"]
+CMD ["node", "services/order-service/dist/src/server.js"]

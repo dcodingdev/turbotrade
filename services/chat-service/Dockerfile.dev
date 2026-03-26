@@ -1,0 +1,22 @@
+FROM node:20-alpine
+RUN npm install -g pnpm tsx
+WORKDIR /app
+
+# 1. Copy root workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig*.json ./
+
+# 2. Copy ALL package.json files from the packages directory
+COPY packages/*/package.json ./packages/
+# This is the trick: Copy ALL service package.json files so the workspace is valid
+COPY services/*/package.json ./services/
+
+# Now run install (it will find @repo/auth-service now)
+RUN pnpm install --no-frozen-lockfile
+
+# 3. Copy the source code for the shared packages
+COPY packages/ ./packages/
+
+# 4. Set the workdir to the specific service
+WORKDIR /app/services/chat-service
+# Note: We don't COPY the service source because it's handled by Docker Volumes in dev
+CMD ["pnpm", "run", "dev"]
