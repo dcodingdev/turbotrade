@@ -1,0 +1,113 @@
+import { Request, Response } from "express";
+import { Order } from "./order.model";
+import axios from "axios";
+import logger from "@repo/logger";
+
+const STOCK_SERVICE_URL = process.env.STOCK_SERVICE_URL || "http://localhost:4002/api/v1/stock";
+
+export const createOrder = async (req: Request, res: Response) => {
+  // Track successful reservations to roll back if a later item fails
+  const reservedItems: string[] = [];
+
+  try {
+    const { items } = req.body; // items should match IOrderItem[] interface
+    const userId = req.user?._id;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({ success: false, message: "Order must have items" });
+    }
+
+    // 1. Calculate Total based on priceAtPurchase in schema
+    const totalAmount = items.reduce(
+      (acc: number, item: any) => acc + item.priceAtPurchase * item.quantity,
+      0
+    );
+
+    // 2. Create Order (Using 'customer' and 'orderStatus' from your schema)
+    const order = await Order.create({
+      customer: userId,
+      items: items.map((item: any) => ({
+        product: item.product,
+        vendor: item.vendor,
+        quantity: item.quantity,
+        priceAtPurchase: item.priceAtPurchase,
+      })),
+      totalAmount,
+      orderStatus: "PENDING",
+    });
+
+    // 3. Try to Reserve Stock for each item
+    try {
+      for (const item of items) {
+        await axios.post(`${STOCK_SERVICE_URL}/reserve/${item.product}`, {
+          amount: item.quantity,
+        });
+        reservedItems.push(item.product); // Track for potential rollback
+      }
+    } catch (stockError: any) {
+      // ROLLBACK LOGIC: Release already reserved items
+      for (const productId of reservedItems) {
+        const item = items.find((i: any) => i.product === productId);
+        await axios.post(`${STOCK_SERVICE_URL}/release/${productId}`, {
+          amount: item.quantity,
+        }).catch(err => logger.error(`Failed to rollback stock for ${productId}`));
+      }
+
+      // Update order status to CANCELLED
+      order.orderStatus = "CANCELLED";
+      await order.save();
+
+      return res.status(400).json({
+        success: false,
+        message: "Stock reservation failed. Order cancelled.",
+        error: stockError.response?.data?.message || stockError.message,
+      });
+    }
+
+    res.status(201).json({ success: true, data: order });
+  } catch (error: any) {
+    logger.error({ err: error }, "Order creation failed");
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Get My Orders
+ * Updated to use 'customer' field from schema
+ */
+export const getMyOrders = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id;
+    const { page = 1, limit = 10 } = req.query;
+
+    // Using aggregatePaginate as defined in your model
+    const query = { customer: userId };
+    const aggregate = Order.aggregate([{ $match: query }, { $sort: { createdAt: -1 } }]);
+
+    const result = await (Order as any).aggregatePaginate(aggregate, {
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    res.status(200).json({ success: true, ...result });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Get Order Details
+ */
+export const getOrderById = async (req: Request, res: Response) => {
+    try {
+      const order = await Order.findById(req.params.id)
+        .populate("items.product")
+        .populate("items.vendor", "name email");
+  
+      if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+  
+      res.status(200).json({ success: true, data: order });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };

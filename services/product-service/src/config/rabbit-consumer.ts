@@ -51,86 +51,158 @@
 //   }
 // };
 
-import { Channel } from "amqplib";
-import { RMQ_NAMES } from "@repo/rabbitmq";
-import { Product } from "src/modules/products/product.model";
-import { Stock } from "src/modules/stock/stock.model";
+// import { Channel } from "amqplib";
+// import { RMQ_NAMES } from "@repo/rabbitmq";
+// import { Product } from "src/modules/products/product.model";
+// import { Stock } from "src/modules/stock/stock.model";
 
-export const startProductConsumer = async (channel: Channel) => {
+// export const startProductConsumer = async (channel: Channel) => {
+//   const exchange = RMQ_NAMES.getExchange("system", "core", "topic");
+//   const queue = RMQ_NAMES.getQueue("product", "product", "events", "main");
+
+//   await channel.assertExchange(exchange, "topic", { durable: true });
+//   await channel.assertQueue(queue, { durable: true });
+
+//   await channel.bindQueue(queue, exchange, "user.updated");
+//   await channel.bindQueue(queue, exchange, "order.created");
+//   await channel.bindQueue(queue, exchange, "order.paid");
+//   await channel.bindQueue(queue, exchange, "order.cancelled");
+
+//   channel.consume(queue, async (msg) => {
+//     if (!msg) return;
+
+//     const event = JSON.parse(msg.content.toString());
+
+//     try {
+//       switch (event.event) {
+
+//         /**
+//          * USER SYNC
+//          */
+//         case "user.updated.v1":
+//           await Product.updateMany(
+//             { "vendor.id": event.data.id },
+//             { $set: { "vendor.name": event.data.name } }
+//           );
+//           break;
+
+//         /**
+//          * ORDER CREATED → reserve stock
+//          */
+//         case "order.created.v1":
+//           for (const item of event.data.items) {
+//             await Stock.updateOne(
+//               { productId: item.productId },
+//               { $inc: { reservedQuantity: item.quantity } }
+//             );
+//           }
+//           break;
+
+//         /**
+//          * ORDER PAID → finalize stock
+//          */
+//         case "order.paid.v1":
+//           for (const item of event.data.items) {
+//             await Stock.updateOne(
+//               { productId: item.productId },
+//               {
+//                 $inc: {
+//                   reservedQuantity: -item.quantity,
+//                   quantity: -item.quantity,
+//                 },
+//               }
+//             );
+//           }
+//           break;
+
+//         /**
+//          * ORDER CANCELLED → release stock
+//          */
+//         case "order.cancelled.v1":
+//           for (const item of event.data.items) {
+//             await Stock.updateOne(
+//               { productId: item.productId },
+//               { $inc: { reservedQuantity: -item.quantity } }
+//             );
+//           }
+//           break;
+//       }
+
+//       channel.ack(msg);
+//     } catch (err) {
+//       channel.nack(msg, false, false);
+//     }
+//   });
+// };
+
+
+import { RMQ_NAMES, consumeEvent, RMQEvent } from "@repo/rabbitmq";
+import { Product } from "../modules/products/product.model";
+import { Stock } from "../modules/stock/stock.model";
+import logger from "@repo/logger";
+
+export const initProductConsumers = async () => {
   const exchange = RMQ_NAMES.getExchange("system", "core", "topic");
-  const queue = RMQ_NAMES.getQueue("product", "product", "events", "main");
+  const queueName = "product-service-sync-queue";
 
-  await channel.assertExchange(exchange, "topic", { durable: true });
-  await channel.assertQueue(queue, { durable: true });
+  /**
+   * 1. USER SYNC: Update vendor names if a user profile changes
+   */
+  await consumeEvent(exchange, "user.updated", queueName, async (msg: RMQEvent) => {
+    const { id, name } = msg.data;
+    await Product.updateMany(
+      { "vendor.id": id },
+      { $set: { "vendor.name": name } }
+    );
+    logger.info(`Synced vendor name for user ${id}`);
+  });
 
-  await channel.bindQueue(queue, exchange, "user.updated");
-  await channel.bindQueue(queue, exchange, "order.created");
-  await channel.bindQueue(queue, exchange, "order.paid");
-  await channel.bindQueue(queue, exchange, "order.cancelled");
-
-  channel.consume(queue, async (msg) => {
-    if (!msg) return;
-
-    const event = JSON.parse(msg.content.toString());
-
-    try {
-      switch (event.event) {
-
-        /**
-         * USER SYNC
-         */
-        case "user.updated.v1":
-          await Product.updateMany(
-            { "vendor.id": event.data.id },
-            { $set: { "vendor.name": event.data.name } }
-          );
-          break;
-
-        /**
-         * ORDER CREATED → reserve stock
-         */
-        case "order.created.v1":
-          for (const item of event.data.items) {
-            await Stock.updateOne(
-              { productId: item.productId },
-              { $inc: { reservedQuantity: item.quantity } }
-            );
-          }
-          break;
-
-        /**
-         * ORDER PAID → finalize stock
-         */
-        case "order.paid.v1":
-          for (const item of event.data.items) {
-            await Stock.updateOne(
-              { productId: item.productId },
-              {
-                $inc: {
-                  reservedQuantity: -item.quantity,
-                  quantity: -item.quantity,
-                },
-              }
-            );
-          }
-          break;
-
-        /**
-         * ORDER CANCELLED → release stock
-         */
-        case "order.cancelled.v1":
-          for (const item of event.data.items) {
-            await Stock.updateOne(
-              { productId: item.productId },
-              { $inc: { reservedQuantity: -item.quantity } }
-            );
-          }
-          break;
-      }
-
-      channel.ack(msg);
-    } catch (err) {
-      channel.nack(msg, false, false);
+  /**
+   * 2. ORDER CREATED: Reserve stock
+   */
+  await consumeEvent(exchange, "order.created", queueName, async (msg: RMQEvent) => {
+    for (const item of msg.data.items) {
+      // Note: Using 'productId' to match your Stock Model
+      await Stock.updateOne(
+        { productId: item.product }, 
+        { $inc: { reservedQuantity: item.quantity } }
+      );
     }
+    logger.info(`Reserved stock for order ${msg.data.orderId}`);
+  });
+
+  /**
+   * 3. ORDER PAID: Finalize stock (Deduct both physical and reserved)
+   */
+  await consumeEvent(exchange, "payment.success", queueName, async (msg: RMQEvent) => {
+    // In payment.success, we might need to fetch the order details first 
+    // or ensure payment.success payload includes items
+    if (msg.data.items) {
+      for (const item of msg.data.items) {
+        await Stock.updateOne(
+          { productId: item.product },
+          {
+            $inc: {
+              reservedQuantity: -item.quantity,
+              quantity: -item.quantity,
+            },
+          }
+        );
+      }
+      logger.info(`Stock finalized for paid order ${msg.data.orderId}`);
+    }
+  });
+
+  /**
+   * 4. ORDER CANCELLED: Release stock
+   */
+  await consumeEvent(exchange, "order.cancelled", queueName, async (msg: RMQEvent) => {
+    for (const item of msg.data.items) {
+      await Stock.updateOne(
+        { productId: item.product },
+        { $inc: { reservedQuantity: -item.quantity } }
+      );
+    }
+    logger.info(`Released reservation for cancelled order ${msg.data.orderId}`);
   });
 };

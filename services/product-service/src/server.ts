@@ -102,7 +102,7 @@ import logger from "@repo/logger";
 import {connectDatabase, mongoose } from "@repo/database";
 import { connectRMQ, stopConsumers } from "@repo/rabbitmq";
 
-import { startProductConsumer } from "./config/rabbit-consumer.js";
+import { initProductConsumers} from "./config/rabbit-consumer.js";
 
 // Routes
 import stockroutes from "./modules/stock/stock.routes.js";
