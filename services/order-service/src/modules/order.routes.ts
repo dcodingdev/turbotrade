@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as orderController from "./order.controller";
-import { authorize, authenticate } from "@repo/auth-service/src/middleware/auth.middleware";
+import { authorize, authenticate } from "@repo/common"
 import { UserRole } from "@repo/types";
 
 const router = Router();

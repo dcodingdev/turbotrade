@@ -109,7 +109,8 @@ import stockroutes from "./modules/stock/stock.routes.js";
 import productRoutes from "./modules/products/product.routes.js";
 
 const app: Application = express();
-const PORT = process.env.PORT || 4002;
+const PORT = process.env.PRODUCT_PORT || 4002;
+const PRODUCT_MONGO_URI=process.env.PRODUCT_MONGO_URI!
 
 let server: Server;
 
@@ -134,6 +135,14 @@ app.use((err: any, req: any, res: any, next: any) => {
 /**
  * Routes
  */
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "product-service"
+  });
+});
+
 app.use("/api/products", productRoutes);
 app.use("/api/stock", stockroutes); // New Stock endpoints
 
@@ -172,14 +181,14 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 const start = async () => {
   try {
     // Validate env
-    if (!process.env.MONGO_URI || !process.env.RABBITMQ_URL) {
+    if (!process.env.PRODUCT_MONGO_URI || !process.env.RABBITMQ_URL) {
       throw new Error("Missing MONGO_URI or RABBITMQ_URL in environment");
     }
 
     /**
      * DB Connection
      */
-    await connectDatabase();
+    await connectDatabase(PRODUCT_MONGO_URI);
 
     /**
      * RabbitMQ Connection

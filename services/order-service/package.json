@@ -13,6 +13,7 @@
     "@repo/logger": "workspace:*",
     "@repo/rabbitmq": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/common": "workspace:*",
     "@types/cors": "^2.8.19",
     "axios": "^1.14.0",
     "cors": "^2.8.5",

@@ -1,20 +1,30 @@
 {
   "name": "@repo/database",
   "version": "1.0.0",
-  "description": "",
-  "type":"module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "type": "module",
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+
+  "exports": {
+    ".": "./dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+
   "packageManager": "pnpm@10.30.3",
+
   "dependencies": {
     "mongoose": "^9.3.0",
     "mongoose-aggregate-paginate-v2": "^1.1.4",
     "@repo/logger": "workspace:*"
+  },
+
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
   }
 }

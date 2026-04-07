@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as payoutController from "./payout.controller";
-import { authenticate, authorize } from "@repo/auth-service";
+import { authenticate, authorize } from "@repo/common";
 import { UserRole } from "@repo/types";
 
 const router = Router();

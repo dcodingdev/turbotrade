@@ -1,7 +1,6 @@
 import { Router } from 'express';
-
-import { authenticate } from '../../middleware/auth.middleware.js';
-import { getProfile,updateProfile } from './user.controller.js';
+import { authenticate } from '@repo/common'; // ✅ Clean workspace import
+import { getProfile, updateProfile } from './user.controller.js';
 
 const router: Router = Router();
 
@@ -12,12 +11,9 @@ const router: Router = Router();
  */
 
 // GET /api/users/profile
-router.get('/profile', authenticate, getProfile)
+router.get('/profile', authenticate, getProfile);
 
 // PATCH /api/users/profile
 router.patch('/profile', authenticate, updateProfile);
 
 export default router;
-
-
-

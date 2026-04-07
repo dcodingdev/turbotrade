@@ -25,7 +25,6 @@ services:
     container_name: auth-service-dev
   
     volumes:
-      - ../../:/app
       # Anonymous volumes to protect the container's node_modules
       - /app/node_modules
       - /app/services/auth-service/node_modules
@@ -44,7 +43,6 @@ services:
       dockerfile: services/product-service/Dockerfile.dev
     container_name: product-service-dev
     volumes:
-      - ../../:/app
       - /app/node_modules
       - /app/services/product-service/node_modules
       - /app/packages/logger/node_modules

@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/server.ts",
   "scripts": {
-    "dev": "tsx watch --preserve-symlinks src/server.ts",
+    "dev": "dotenv -e ../../.env -- tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "clean": "rm -rf dist"
@@ -16,6 +16,7 @@
     "@repo/database": "workspace:*",
     "@repo/logger": "workspace:*",
     "@repo/rabbitmq": "workspace:*",
+    "@repo/common": "workspace:*",
     "@repo/types": "workspace:*",
     "amqplib": "^0.10.9",
     "bcrypt": "^6.0.0",

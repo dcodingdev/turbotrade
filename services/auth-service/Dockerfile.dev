@@ -30,4 +30,4 @@ WORKDIR /app/services/auth-service
 EXPOSE 4001
 
 # Use pnpm run dev to trigger your 'tsx watch' script
-CMD ["pnpm", "run", "dev"]
+CMD ["pnpm", "--filter", "@repo/auth-service", "dev"]

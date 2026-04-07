@@ -1,11 +1,21 @@
-
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "esnext",
-    "moduleResolution": "Node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
 
     "baseUrl": ".",
+    "paths": {
+      "@repo/types": ["../../packages/types"],
+      "@repo/api-contracts": ["../../packages/api-contracts"],
+      "@repo/logger": ["../../packages/logger"],
+      "@repo/database": ["../../packages/database"],
+      "@repo/rabbitmq": ["../../packages/rabbitmq"],
+      "@repo/common": ["../../packages/common"],
+      "@repo/image-storage": ["../../packages/image-storage"]
+    },
+
+    "rootDir": "src",
     "outDir": "dist",
 
     "strict": true,
@@ -13,18 +23,14 @@
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
     "forceConsistentCasingInFileNames": true,
 
-    "paths": {
-      "@repo/types": ["../../packages/types/src/user"],
-      "@repo/api-contracts": ["../../packages/api-contracts/src/index"],
-      "@repo/logger": ["../../packages/logger/src/index"],
-      "@repo/database": ["../../packages/database/src/index"],
-      "@repo/rabbitmq": ["../../packages/rabbitmq/src/index"],
-      "@repo/auth-service": ["../auth-service/index.ts"],
-    }
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    "ignoreDeprecations": "6.0"
   },
+
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

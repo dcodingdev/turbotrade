@@ -113,7 +113,8 @@ import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/user.routes.js';
 
 const app: Application = express();
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.AUTH_PORT || 4001;
+const AUTH_MONGO_URI=process.env.AUTH_MONGO_URI!
 let server: Server;
 
 // 1. Standard Middleware
@@ -132,6 +133,13 @@ app.use((req, res, next) => {
 });
 
 // 2. Routes
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "auth-service"
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
@@ -173,7 +181,7 @@ process.on('uncaughtException', (err) => {
 const start = async () => {
   try {
     // Connect to MongoDB
-    await connectDatabase();
+    await connectDatabase(AUTH_MONGO_URI);
     
     // Connect to RabbitMQ (Ensure the URL is provided in .env)
     if (!process.env.RABBITMQ_URL) {

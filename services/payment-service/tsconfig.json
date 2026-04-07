@@ -19,7 +19,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
-    "baseUrl": ".",
+    "rootDir": "../..",
     "outDir": "dist",
 
     "strict": true,
@@ -36,8 +36,11 @@
       "@repo/logger": ["../../packages/logger/src/index"],
       "@repo/database": ["../../packages/database/src/index"],
       "@repo/rabbitmq": ["../../packages/rabbitmq/src/index"],
-      "@repo/auth-service": ["../auth-service/index.ts"],
+      "@repo/common": ["../../packages/common/src/index"]
     }
+
+    // Optional temporary fix:
+    // "ignoreDeprecations": "6.0"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
