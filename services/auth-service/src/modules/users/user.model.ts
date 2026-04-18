@@ -133,7 +133,6 @@ const UserSchema = new mongoose.Schema<IUser>(
   }
 );
 
-// Optional index
-UserSchema.index({ email: 1 });
+// Index already created by unique: true in schema
 
 export const User = mongoose.model<IUser>('User', UserSchema);

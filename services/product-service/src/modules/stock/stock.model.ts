@@ -93,9 +93,7 @@ stockSchema.pre<IStock>("save", function () {
 });
 
 /**
- * Helpful indexes
+ * Helpful indexes (Duplicates removed, already defined inline with index: true)
  */
-stockSchema.index({ vendorId: 1 });
-stockSchema.index({ productId: 1 });
 
 export const Stock = mongoose.model<IStock>("Stock", stockSchema);

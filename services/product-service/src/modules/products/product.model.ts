@@ -154,8 +154,6 @@ const productSchema = new Schema<IProduct>(
 /**
  * Indexes for performance
  */
-productSchema.index({ "vendor.id": 1 });
-productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 
 export const Product = mongoose.model<

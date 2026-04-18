@@ -27,6 +27,7 @@
 // };
 
 
+import { Payment } from "./payment.model";
 import { Request, Response } from "express";
 import { mongoose } from "@repo/database";
 import * as paymentService from "./payment.service";
@@ -44,7 +45,7 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
       gatewayResponse = await paymentService.createRazorpayOrder(amount, currency);
     }
 
-    const payment = await mongoose.model("Payment").create({
+    const payment = await Payment.create({
       orderId: new mongoose.Types.ObjectId(orderId),
       customerId: new mongoose.Types.ObjectId(req.user!._id),
       amount,
@@ -55,7 +56,11 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, gatewayData: gatewayResponse, paymentId: payment._id });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("PAYMENT ERROR:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: error?.error?.description || error?.message || "Gateway Authentication Failed"
+    });
   }
 };
 

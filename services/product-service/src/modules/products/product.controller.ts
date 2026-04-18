@@ -458,8 +458,7 @@ export const getProductById = async (req: Request, res: Response) => {
 
   try {
     logger.info(route);
-
-    const product = await Product.findById(req.params.id).populate("category");
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       logger.warn(`${route} - Product not found`);

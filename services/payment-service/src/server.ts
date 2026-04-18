@@ -184,7 +184,7 @@ process.on("SIGINT", () => shutdown("SIGINT"));
  */
 const start = async () => {
   try {
-    if (!process.env.MONGO_URI || !process.env.RABBITMQ_URL) {
+    if (!process.env.PAYMENT_MONGO_URI || !process.env.RABBITMQ_URL) {
       throw new Error("Missing MONGO_URI or RABBITMQ_URL in environment");
     }
 

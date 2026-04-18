@@ -13,6 +13,7 @@ import orderRoutes from "./modules/order.routes.js";
 
 const app: Application = express();
 const PORT = process.env.PORT || 4003;
+const ORDER_MONGO_URI= process.env.ORDER_MONGO_URI!
 
 let server: Server;
 
@@ -30,6 +31,9 @@ app.use(
 /**
  * Routes
  */
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", service: "order-service", time: new Date().toISOString() });
+});
 app.use("/api/orders", orderRoutes);
 
 /**
@@ -59,11 +63,11 @@ process.on("SIGINT", () => shutdown("SIGINT"));
  */
 const start = async () => {
   try {
-    if (!process.env.MONGO_URI || !process.env.RABBITMQ_URL) {
+    if (!process.env.ORDER_MONGO_URI || !process.env.RABBITMQ_URL) {
       throw new Error("Missing MONGO_URI or RABBITMQ_URL");
     }
 
-    await connectDatabase();
+    await connectDatabase(ORDER_MONGO_URI);
     await connectRMQ(process.env.RABBITMQ_URL);
     
     // Initialize RabbitMQ Listeners for Payment Success/Fail

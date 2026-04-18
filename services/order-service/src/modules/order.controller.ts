@@ -3,7 +3,7 @@ import { Order } from "./order.model";
 import axios from "axios";
 import logger from "@repo/logger";
 
-const STOCK_SERVICE_URL = process.env.STOCK_SERVICE_URL || "http://localhost:4002/api/v1/stock";
+const STOCK_SERVICE_URL = process.env.STOCK_SERVICE_URL || "http://localhost:4002/api/stock";
 
 export const createOrder = async (req: Request, res: Response) => {
   // Track successful reservations to roll back if a later item fails
@@ -39,7 +39,7 @@ export const createOrder = async (req: Request, res: Response) => {
     // 3. Try to Reserve Stock for each item
     try {
       for (const item of items) {
-        await axios.post(`${STOCK_SERVICE_URL}/reserve/${item.product}`, {
+        await axios.post(`${STOCK_SERVICE_URL}/${item.product}/reserve`, {
           amount: item.quantity,
         });
         reservedItems.push(item.product); // Track for potential rollback
@@ -48,7 +48,7 @@ export const createOrder = async (req: Request, res: Response) => {
       // ROLLBACK LOGIC: Release already reserved items
       for (const productId of reservedItems) {
         const item = items.find((i: any) => i.product === productId);
-        await axios.post(`${STOCK_SERVICE_URL}/release/${productId}`, {
+        await axios.post(`${STOCK_SERVICE_URL}/${productId}/release`, {
           amount: item.quantity,
         }).catch(err => logger.error(`Failed to rollback stock for ${productId}`));
       }
@@ -100,14 +100,14 @@ export const getMyOrders = async (req: Request, res: Response) => {
  */
 export const getOrderById = async (req: Request, res: Response) => {
     try {
-      const order = await Order.findById(req.params.id)
-        .populate("items.product")
-        .populate("items.vendor", "name email");
+      // Remove cross-service populates since Product and User models aren't present here
+      const order = await Order.findById(req.params.id);
   
       if (!order) return res.status(404).json({ success: false, message: "Order not found" });
   
       res.status(200).json({ success: true, data: order });
     } catch (error: any) {
+      logger.error({ err: error }, "Failed to fetch order details");
       res.status(500).json({ success: false, message: error.message });
     }
   };
