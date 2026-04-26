@@ -6,9 +6,9 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig*.json ./
 
 # 2. Copy ALL package.json files from the packages directory
-COPY packages/*/package.json ./packages/
+COPY packages/ ./packages/
 # This is the trick: Copy ALL service package.json files so the workspace is valid
-COPY services/*/package.json ./services/
+COPY services/email-service/package.json ./services/email-service/
 
 # Now run install (it will find @repo/auth-service now)
 RUN pnpm install --no-frozen-lockfile

@@ -93,7 +93,7 @@
 
 
 
-import "dotenv/config";
+import "dotenv/config.js";
 import express, { Application } from "express";
 import cors from "cors";
 import { Server } from "http";

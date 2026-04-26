@@ -10,9 +10,21 @@ WORKDIR /app
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 
 # 2. Copy all package.json files from the entire monorepo 
-# This allows pnpm to install dependencies without needing the full source code yet
+COPY packages/api-contracts/package.json ./packages/api-contracts/
+COPY packages/common/package.json ./packages/common/
+COPY packages/config/package.json ./packages/config/
+COPY packages/database/package.json ./packages/database/
+COPY packages/image-storage/package.json ./packages/image-storage/
+COPY packages/logger/package.json ./packages/logger/
+COPY packages/rabbitmq/package.json ./packages/rabbitmq/
+COPY packages/types/package.json ./packages/types/
+
 COPY services/auth-service/package.json ./services/auth-service/
-COPY packages/ ./packages/
+COPY services/chat-service/package.json ./services/chat-service/
+COPY services/email-service/package.json ./services/email-service/
+COPY services/order-service/package.json ./services/order-service/
+COPY services/payment-service/package.json ./services/payment-service/
+COPY services/product-service/package.json ./services/product-service/
 
 # 3. Install dependencies
 # We use --no-frozen-lockfile in dev to handle minor version mismatches 

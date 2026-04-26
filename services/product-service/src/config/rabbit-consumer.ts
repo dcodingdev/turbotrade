@@ -137,8 +137,8 @@
 
 
 import { RMQ_NAMES, consumeEvent, RMQEvent } from "@repo/rabbitmq";
-import { Product } from "../modules/products/product.model";
-import { Stock } from "../modules/stock/stock.model";
+import { Product } from "../modules/products/product.model.js";
+import { Stock } from "../modules/stock/stock.model.js";
 import logger from "@repo/logger";
 
 export const initProductConsumers = async () => {

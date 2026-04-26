@@ -5,8 +5,6 @@
     "moduleResolution": "NodeNext",
 
     "baseUrl": ".",
-    "rootDir": "../..",
-
     "paths": {
       "@repo/api-contracts": ["../../packages/api-contracts/src/index.ts"],
       "@repo/config": ["../../packages/config/src/index.ts"],
@@ -17,15 +15,17 @@
       "@repo/common": ["../../packages/common/src/index.ts"]
     },
 
+    "outDir": "dist",
+
     "strict": true,
     "skipLibCheck": true,
+
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
 
-    "ignoreDeprecations": "5.0"
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": [
     "src/**/*",

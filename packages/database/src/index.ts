@@ -48,3 +48,4 @@ export const closeDatabase = async (): Promise<void> => {
 export { mongoose };
 export const { Schema, Types, model } = mongoose;
 export type Document = MongooseDocument;
+export type AggregatePaginateModel<T> = mongoose.AggregatePaginateModel<T>;

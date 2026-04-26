@@ -27,12 +27,12 @@
 // };
 
 
-import { Payment } from "./payment.model";
+import { Payment } from "./payment.model.js";
 import { Request, Response } from "express";
 import { mongoose } from "@repo/database";
-import * as paymentService from "./payment.service";
-import { stripe } from "../../config/gateway";
-import crypto from "crypto";
+import * as paymentService from "./payment.service.js";
+import { stripe } from "../../config/gateway.js";
+import crypto from "node:crypto";
 
 export const createPaymentIntent = async (req: Request, res: Response) => {
   const { orderId, amount, gateway, currency = "USD" } = req.body;

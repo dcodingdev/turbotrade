@@ -50,7 +50,7 @@ export const createOrder = async (req: Request, res: Response) => {
         const item = items.find((i: any) => i.product === productId);
         await axios.post(`${STOCK_SERVICE_URL}/${productId}/release`, {
           amount: item.quantity,
-        }).catch(err => logger.error(`Failed to rollback stock for ${productId}`));
+        }).catch((err: any) => logger.error(`Failed to rollback stock for ${productId}`));
       }
 
       // Update order status to CANCELLED

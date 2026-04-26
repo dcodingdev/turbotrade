@@ -348,7 +348,7 @@ import logger from "@repo/logger";
 import { Stock } from "../stock/stock.model.js";
 import { publishEvent, RMQ_NAMES } from "@repo/rabbitmq";
 import { UserRole } from "@repo/types";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 /**
  * Helper for consistent route logging

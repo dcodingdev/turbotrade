@@ -84,7 +84,7 @@ const stockSchema = new Schema<IStock>(
 /**
  * Auto-calculate stock status
  */
-stockSchema.pre<IStock>("save", function () {
+stockSchema.pre<IStock>("save", function (this: IStock) {
   const available = this.quantity - this.reservedQuantity;
 
   if (available <= 0) this.status = "OUT_OF_STOCK";

@@ -61,7 +61,7 @@
 // );
 
 
-import { mongoose, Schema, Document } from "@repo/database";
+import { mongoose, Schema, Document, AggregatePaginateModel } from "@repo/database";
 
 export interface IProduct extends Document {
   name: string;
@@ -158,5 +158,5 @@ productSchema.index({ price: 1 });
 
 export const Product = mongoose.model<
   IProduct,
-  mongoose.AggregatePaginateModel<IProduct>
+  AggregatePaginateModel<IProduct>
 >("Product", productSchema);

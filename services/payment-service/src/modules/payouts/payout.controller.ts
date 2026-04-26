@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as payoutService from "./payout.service";
+import * as payoutService from "./payout.service.js";
 
 export const requestPayout = async (req: Request, res: Response) => {
   try {

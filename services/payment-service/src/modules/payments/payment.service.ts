@@ -65,8 +65,8 @@
 // };
 
 
-import { stripe, razorpay } from "../../config/gateway";
-import { Payment } from "./payment.model";
+import { stripe, razorpay } from "../../config/gateway.js";
+import { Payment } from "./payment.model.js";
 import { publishEvent, RMQ_NAMES } from "@repo/rabbitmq";
 import crypto from "crypto";
 import logger from "@repo/logger";

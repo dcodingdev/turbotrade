@@ -5,10 +5,22 @@ WORKDIR /app
 # 1. Copy root workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig*.json ./
 
-# 2. Copy ALL package.json files from the packages directory
-COPY packages/*/package.json ./packages/
-# This is the trick: Copy ALL service package.json files so the workspace is valid
-COPY services/*/package.json ./services/
+# 2. Copy all package.json files to preserve workspace structure
+COPY packages/api-contracts/package.json ./packages/api-contracts/
+COPY packages/common/package.json ./packages/common/
+COPY packages/config/package.json ./packages/config/
+COPY packages/database/package.json ./packages/database/
+COPY packages/image-storage/package.json ./packages/image-storage/
+COPY packages/logger/package.json ./packages/logger/
+COPY packages/rabbitmq/package.json ./packages/rabbitmq/
+COPY packages/types/package.json ./packages/types/
+
+COPY services/auth-service/package.json ./services/auth-service/
+COPY services/chat-service/package.json ./services/chat-service/
+COPY services/email-service/package.json ./services/email-service/
+COPY services/order-service/package.json ./services/order-service/
+COPY services/payment-service/package.json ./services/payment-service/
+COPY services/product-service/package.json ./services/product-service/
 
 # Now run install (it will find @repo/auth-service now)
 RUN pnpm install --no-frozen-lockfile

@@ -24,14 +24,27 @@ services:
       context: ../../
       dockerfile: services/auth-service/Dockerfile.dev
     container_name: auth-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
-      - ../../:/app                                 # Sync code
-      - /app/node_modules                            # Protect root node_modules
-      - /app/services/auth-service/node_modules      # Protect service node_modules
+      - ../../:/app
+      - /app/node_modules
+      - /app/services/auth-service/node_modules
+      - /app/packages/api-contracts/node_modules
+      - /app/packages/common/node_modules
+      - /app/packages/config/node_modules
+      - /app/packages/database/node_modules
+      - /app/packages/image-storage/node_modules
+      - /app/packages/logger/node_modules
+      - /app/packages/rabbitmq/node_modules
+      - /app/packages/types/node_modules
+      - /app/packages/ui/node_modules
     environment:
-      - PORT=4001
+      - AUTH_PORT=4001
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-      - MONGO_URI=${AUTH_DB_URI}
+      - AUTH_MONGO_URI=${AUTH_DB_URI}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - CLIENT_URL=${CLIENT_URL}
     networks:
       - app-network
 
@@ -40,13 +53,28 @@ services:
       context: ../../
       dockerfile: services/product-service/Dockerfile.dev
     container_name: product-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
       - ../../:/app
       - /app/node_modules
       - /app/services/product-service/node_modules
+      - /app/packages/api-contracts/node_modules
+      - /app/packages/common/node_modules
+      - /app/packages/config/node_modules
+      - /app/packages/database/node_modules
+      - /app/packages/image-storage/node_modules
+      - /app/packages/logger/node_modules
+      - /app/packages/rabbitmq/node_modules
+      - /app/packages/types/node_modules
+      - /app/packages/ui/node_modules
     environment:
-      - PORT=4002
-      - MONGO_URI=${PRODUCT_DB_URI}
+      - PRODUCT_PORT=4002
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - PRODUCT_MONGO_URI=${PRODUCT_DB_URI}
+      - IMAGEKIT_PUBLIC_KEY=${IMAGEKIT_PUBLIC_KEY}
+      - IMAGEKIT_PRIVATE_KEY=${IMAGEKIT_PRIVATE_KEY}
+      - IMAGEKIT_URL_ENDPOINT=${IMAGEKIT_URL_ENDPOINT}
+      - CLIENT_URL=${CLIENT_URL}
     networks:
       - app-network
 
@@ -55,14 +83,25 @@ services:
       context: ../../
       dockerfile: services/order-service/Dockerfile.dev
     container_name: order-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
       - ../../:/app
       - /app/node_modules
       - /app/services/order-service/node_modules
+      - /app/packages/api-contracts/node_modules
+      - /app/packages/common/node_modules
+      - /app/packages/config/node_modules
+      - /app/packages/database/node_modules
+      - /app/packages/image-storage/node_modules
+      - /app/packages/logger/node_modules
+      - /app/packages/rabbitmq/node_modules
+      - /app/packages/types/node_modules
+      - /app/packages/ui/node_modules
     environment:
-      - PORT=4003
+      - ORDER_PORT=4003
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
-      - MONGO_URI=${ORDER_DB_URI}
+      - ORDER_MONGO_URI=${ORDER_DB_URI}
+      - CLIENT_URL=${CLIENT_URL}
     networks:
       - app-network
 
@@ -71,13 +110,29 @@ services:
       context: ../../
       dockerfile: services/payment-service/Dockerfile.dev
     container_name: payment-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
       - ../../:/app
       - /app/node_modules
       - /app/services/payment-service/node_modules
+      - /app/packages/api-contracts/node_modules
+      - /app/packages/common/node_modules
+      - /app/packages/config/node_modules
+      - /app/packages/database/node_modules
+      - /app/packages/image-storage/node_modules
+      - /app/packages/logger/node_modules
+      - /app/packages/rabbitmq/node_modules
+      - /app/packages/types/node_modules
+      - /app/packages/ui/node_modules
     environment:
-      - PORT=4004
-      - MONGO_URI=${PAYMENT_DB_URI}
+      - PAYMENT_PORT=4004
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - PAYMENT_MONGO_URI=${PAYMENT_DB_URI}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      - CLIENT_URL=${CLIENT_URL}
     networks:
       - app-network
 
@@ -86,6 +141,7 @@ services:
       context: ../../
       dockerfile: services/email-service/Dockerfile.dev
     container_name: email-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
       - ../../:/app
       - /app/node_modules
@@ -101,13 +157,15 @@ services:
       context: ../../
       dockerfile: services/chat-service/Dockerfile.dev
     container_name: chat-service-dev
+    command: sh -c "pnpm run dev"
     volumes:
       - ../../:/app
       - /app/node_modules
       - /app/services/chat-service/node_modules
     environment:
-      - PORT=4006
-      - MONGO_URI=${CHAT_DB_URI}
+      - CHAT_PORT=4006
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - CHAT_MONGO_URI=${CHAT_DB_URI}
     networks:
       - app-network
 

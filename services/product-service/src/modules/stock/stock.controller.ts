@@ -104,7 +104,7 @@
 
 
 import { Request, Response } from "express";
-import { Stock } from "./stock.model";
+import { Stock } from "./stock.model.js";
 import logger from "@repo/logger";
 
 /**

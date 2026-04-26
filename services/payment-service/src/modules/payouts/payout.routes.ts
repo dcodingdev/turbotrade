@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as payoutController from "./payout.controller";
+import * as payoutController from "./payout.controller.js";
 import { authenticate, authorize } from "@repo/common";
 import { UserRole } from "@repo/types";
 
