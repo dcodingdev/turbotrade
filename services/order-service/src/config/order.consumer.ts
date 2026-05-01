@@ -1,5 +1,5 @@
 import { consumeEvent, RMQ_NAMES, RMQEvent } from "@repo/rabbitmq";
-import { Order } from "../modules/order.model"; // Adjust path as needed
+import { Order } from "../modules/order.model.js"; // Adjust path as needed
 import axios from "axios";
 import logger from "@repo/logger";
 

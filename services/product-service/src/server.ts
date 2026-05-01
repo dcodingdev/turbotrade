@@ -94,7 +94,7 @@
 
 
 import "dotenv/config.js";
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { Server } from "http";
 
@@ -120,7 +120,7 @@ let server: Server;
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: true,
     credentials: true,
   })
 );
@@ -136,7 +136,7 @@ app.use((err: any, req: any, res: any, next: any) => {
  * Routes
  */
 
-app.get("/health", (req, res) => {
+app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "ok",
     service: "product-service"

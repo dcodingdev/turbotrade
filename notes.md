@@ -1,3 +1,21 @@
+http://localhost/health 
+http://localhost/api/auth/health 
+http://localhost/api/products/health
+
+http://localhost/api/payments/health
+
+http://localhost/api/orders/health
+http://localhost/api/email/health
+http://localhost/api/chat/health
+
+
+http://localhost/api/auth/
+http://localhost/api/products/
+http://localhost/api/payments/
+http://localhost/api/orders/
+http://localhost/api/chat/
+http://localhost/api/email/
+
 cd infrastructure
 cd docker
 

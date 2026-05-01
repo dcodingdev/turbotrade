@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as orderController from "./order.controller";
+import * as orderController from "./order.controller.js";
 import { authorize, authenticate } from "@repo/common"
 import { UserRole } from "@repo/types";
 

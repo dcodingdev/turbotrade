@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Order } from "./order.model";
+import { Order } from "./order.model.js";
 import axios from "axios";
 import logger from "@repo/logger";
 

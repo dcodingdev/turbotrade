@@ -662,7 +662,7 @@
     </div>
 
     <!-- Payment Service -->
-    <div class="nav-group-label">💸 Payment Service :4004</div>
+    <div class="nav-group-label">💸 Payment Service</div>
     <div class="nav-item" onclick="showView('pay-health')">
       <div class="method-dot dot-get"></div> Health Check
       <span class="nav-badge">GET</span>
@@ -674,6 +674,28 @@
     <div class="nav-item" onclick="showView('payout-req')">
       <div class="method-dot dot-post"></div> Request Payout
       <span class="nav-badge">POST</span>
+    </div>
+
+    <!-- Email Service -->
+    <div class="nav-group-label">📧 Email Service</div>
+    <div class="nav-item" onclick="showView('email-health')">
+      <div class="method-dot dot-get"></div> Health Check
+      <span class="nav-badge">GET</span>
+    </div>
+    <div class="nav-item" onclick="showView('email-base')">
+      <div class="method-dot dot-get"></div> Base Route
+      <span class="nav-badge">GET</span>
+    </div>
+
+    <!-- Chat Service -->
+    <div class="nav-group-label">💬 Chat Service</div>
+    <div class="nav-item" onclick="showView('chat-health')">
+      <div class="method-dot dot-get"></div> Health Check
+      <span class="nav-badge">GET</span>
+    </div>
+    <div class="nav-item" onclick="showView('chat-base')">
+      <div class="method-dot dot-get"></div> Base Route
+      <span class="nav-badge">GET</span>
     </div>
   </aside>
 
@@ -689,17 +711,26 @@
 
     <!-- Health strip -->
     <div class="health-strip">
-      <div class="health-chip" onclick="checkHealth(4001,'auth')">
-        <div class="health-dot" id="health-auth"></div> Auth :4001
+      <div class="health-chip" onclick="checkHealth('auth')">
+        <div class="health-dot" id="health-auth"></div> Auth
       </div>
-      <div class="health-chip" onclick="checkHealth(4002,'prod')">
-        <div class="health-dot" id="health-prod"></div> Product :4002
+      <div class="health-chip" onclick="checkHealth('prod')">
+        <div class="health-dot" id="health-prod"></div> Product
       </div>
-      <div class="health-chip" onclick="checkHealth(4003,'order')">
-        <div class="health-dot" id="health-order"></div> Order :4003
+      <div class="health-chip" onclick="checkHealth('order')">
+        <div class="health-dot" id="health-order"></div> Order
       </div>
-      <div class="health-chip" onclick="checkHealth(4004,'pay')">
-        <div class="health-dot" id="health-pay"></div> Payment :4004
+      <div class="health-chip" onclick="checkHealth('pay')">
+        <div class="health-dot" id="health-pay"></div> Payment
+      </div>
+      <div class="health-chip" onclick="checkHealth('email')">
+        <div class="health-dot" id="health-email"></div> Email
+      </div>
+      <div class="health-chip" onclick="checkHealth('chat')">
+        <div class="health-dot" id="health-chat"></div> Chat
+      </div>
+      <div class="health-chip" onclick="checkHealth('gateway')">
+        <div class="health-dot" id="health-gateway"></div> Gateway
       </div>
       <div class="health-check-all" onclick="checkAllHealth()">⚡ Ping All</div>
     </div>
@@ -718,13 +749,12 @@
               <div class="service-icon" style="background: rgba(99,102,241,0.15);">🔐</div>
               <div>
                 <div class="service-name">Auth Service</div>
-                <div class="service-port">localhost:4001</div>
+                <div class="service-port">/api/auth</div>
               </div>
             </div>
             <div class="service-endpoints">
               <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/auth/register</div>
               <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/auth/login</div>
-              <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/auth/refresh</div>
               <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/users/profile</div>
             </div>
           </div>
@@ -733,14 +763,13 @@
               <div class="service-icon" style="background: rgba(16,185,129,0.15);">📦</div>
               <div>
                 <div class="service-name">Product Service</div>
-                <div class="service-port">localhost:4002</div>
+                <div class="service-port">/api/products</div>
               </div>
             </div>
             <div class="service-endpoints">
               <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/products</div>
               <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/products</div>
               <div class="endpoint-row"><span style="color:var(--yellow)">PATCH</span> /api/stock/:id/inventory</div>
-              <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/stock/:id/reserve</div>
             </div>
           </div>
           <div class="service-card">
@@ -748,27 +777,38 @@
               <div class="service-icon" style="background: rgba(245,158,11,0.15);">🛒</div>
               <div>
                 <div class="service-name">Order Service</div>
-                <div class="service-port">localhost:4003</div>
+                <div class="service-port">/api/orders</div>
               </div>
             </div>
             <div class="service-endpoints">
               <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/orders</div>
               <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/orders/me</div>
-              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/orders/:id</div>
             </div>
           </div>
           <div class="service-card">
             <div class="service-card-header">
-              <div class="service-icon" style="background: rgba(168,85,247,0.15);">💸</div>
+              <div class="service-icon" style="background: rgba(168,85,247,0.15);">📧</div>
               <div>
-                <div class="service-name">Payment Service</div>
-                <div class="service-port">localhost:4004</div>
+                <div class="service-name">Email Service</div>
+                <div class="service-port">/api/email</div>
               </div>
             </div>
             <div class="service-endpoints">
-              <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/payments/process</div>
-              <div class="endpoint-row"><span style="color:var(--accent)">POST</span> /api/payouts/request</div>
-              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /health</div>
+              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/email/health</div>
+              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/email/</div>
+            </div>
+          </div>
+          <div class="service-card">
+            <div class="service-card-header">
+              <div class="service-icon" style="background: rgba(59,130,246,0.15);">💬</div>
+              <div>
+                <div class="service-name">Chat Service</div>
+                <div class="service-port">/api/chat</div>
+              </div>
+            </div>
+            <div class="service-endpoints">
+              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/chat/health</div>
+              <div class="endpoint-row"><span style="color:var(--green)">GET </span> /api/chat/</div>
             </div>
           </div>
         </div>
@@ -823,6 +863,18 @@ let state = {
 // ── INIT ───────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   updateTokenDisplay();
+  if (window.location.protocol === 'file:') {
+    const ca = document.getElementById('content-area');
+    const warning = document.createElement('div');
+    warning.style.padding = '10px 20px';
+    warning.style.background = 'var(--yellow-dim)';
+    warning.style.color = 'var(--yellow)';
+    warning.style.fontSize = '12px';
+    warning.style.textAlign = 'center';
+    warning.style.borderBottom = '1px solid var(--border)';
+    warning.innerHTML = '⚠️ <strong>Security Notice:</strong> You are running this file directly from the filesystem. Browser security (CORS) may block requests to localhost. It is recommended to serve this file using a local server (e.g., VS Code Live Server or "npx serve").';
+    document.querySelector('.main').insertBefore(warning, document.getElementById('topbar').nextSibling);
+  }
 });
 
 // ── TOKEN MANAGEMENT ───────────────────────────
@@ -855,12 +907,15 @@ function copyToken() {
 
 // ── HEALTH CHECKS ──────────────────────────────
 const healthUrls = {
-  auth:  'http://localhost:4001/health',
-  prod:  'http://localhost:4002/health',
-  order: 'http://localhost:4003/health',
-  pay:   'http://localhost:4004/health',
+  auth:    'http://localhost/api/auth/health',
+  prod:    'http://localhost/api/products/health',
+  order:   'http://localhost/api/orders/health',
+  pay:     'http://localhost/api/payments/health',
+  email:   'http://localhost/api/email/health',
+  chat:    'http://localhost/api/chat/health',
+  gateway: 'http://localhost/health',
 };
-async function checkHealth(port, key) {
+async function checkHealth(key) {
   const dot = document.getElementById(`health-${key}`);
   dot.className = 'health-dot checking';
   try {
@@ -869,9 +924,8 @@ async function checkHealth(port, key) {
   } catch { dot.className = 'health-dot down'; }
 }
 function checkAllHealth() {
-  ['auth','prod','order','pay'].forEach((k,i) => {
-    const ports = { auth:4001, prod:4002, order:4003, pay:4004 };
-    setTimeout(() => checkHealth(ports[k], k), i * 200);
+  Object.keys(healthUrls).forEach((k,i) => {
+    setTimeout(() => checkHealth(k), i * 150);
   });
 }
 
@@ -910,33 +964,39 @@ function showView(id) {
 
   switch(id) {
     /* ── AUTH ── */
-    case 'auth-health':   renderSimpleGet(slot, 'http://localhost:4001/health', 'Auth Service Health'); setTopbar('Auth · Health Check','GET','http://localhost:4001/health'); break;
-    case 'auth-register': renderAuthRegister(slot); setTopbar('Auth · Register','POST','http://localhost:4001/api/auth/register'); break;
-    case 'auth-login':    renderAuthLogin(slot);    setTopbar('Auth · Login','POST','http://localhost:4001/api/auth/login'); break;
-    case 'auth-refresh':  renderAuthRefresh(slot);  setTopbar('Auth · Refresh Token','POST','http://localhost:4001/api/auth/refresh'); break;
-    case 'auth-logout':   renderAuthLogout(slot);   setTopbar('Auth · Logout','POST','http://localhost:4001/api/auth/logout'); break;
-    case 'auth-profile-get':   renderSimpleAuthGet(slot, 'http://localhost:4001/api/users/profile', 'Get User Profile'); setTopbar('Users · Get Profile','GET','http://localhost:4001/api/users/profile'); break;
-    case 'auth-profile-patch': renderUpdateProfile(slot); setTopbar('Users · Update Profile','PATCH','http://localhost:4001/api/users/profile'); break;
+    case 'auth-health':   renderSimpleGet(slot, 'http://localhost/api/auth/health', 'Auth Service Health'); setTopbar('Auth · Health Check','GET','http://localhost/api/auth/health'); break;
+    case 'auth-register': renderAuthRegister(slot); setTopbar('Auth · Register','POST','http://localhost/api/auth/register'); break;
+    case 'auth-login':    renderAuthLogin(slot);    setTopbar('Auth · Login','POST','http://localhost/api/auth/login'); break;
+    case 'auth-refresh':  renderAuthRefresh(slot);  setTopbar('Auth · Refresh Token','POST','http://localhost/api/auth/refresh'); break;
+    case 'auth-logout':   renderAuthLogout(slot);   setTopbar('Auth · Logout','POST','http://localhost/api/auth/logout'); break;
+    case 'auth-profile-get':   renderSimpleAuthGet(slot, 'http://localhost/api/users/profile', 'Get User Profile'); setTopbar('Users · Get Profile','GET','http://localhost/api/users/profile'); break;
+    case 'auth-profile-patch': renderUpdateProfile(slot); setTopbar('Users · Update Profile','PATCH','http://localhost/api/users/profile'); break;
     /* ── PRODUCT ── */
-    case 'prod-health':   renderSimpleGet(slot, 'http://localhost:4002/health', 'Product Service Health'); setTopbar('Product · Health Check','GET','http://localhost:4002/health'); break;
-    case 'prod-get-all':  renderGetAllProducts(slot); setTopbar('Products · Get All','GET','http://localhost:4002/api/products'); break;
-    case 'prod-get-one':  renderGetProductById(slot); setTopbar('Products · Get by ID','GET','http://localhost:4002/api/products/:id'); break;
-    case 'prod-create':   renderCreateProduct(slot);  setTopbar('Products · Create','POST','http://localhost:4002/api/products'); break;
-    case 'prod-update':   renderUpdateProduct(slot);  setTopbar('Products · Update','PATCH','http://localhost:4002/api/products/:id'); break;
-    case 'prod-delete':   renderDeleteProduct(slot);  setTopbar('Products · Delete','DELETE','http://localhost:4002/api/products/:id'); break;
-    case 'prod-toggle':   renderTogglePublish(slot);  setTopbar('Products · Toggle Publish','PATCH','http://localhost:4002/api/products/:id/toggle-publish'); break;
-    case 'stock-update':  renderStockUpdate(slot);    setTopbar('Stock · Update Inventory','PATCH','http://localhost:4002/api/stock/:productId/inventory'); break;
-    case 'stock-reserve': renderStockOp(slot,'reserve','Reserve Stock'); setTopbar('Stock · Reserve','POST','http://localhost:4002/api/stock/:productId/reserve'); break;
-    case 'stock-confirm': renderStockOp(slot,'confirm','Confirm Sale');   setTopbar('Stock · Confirm Sale','POST','http://localhost:4002/api/stock/:productId/confirm'); break;
-    case 'stock-release': renderStockOp(slot,'release','Release Reservation'); setTopbar('Stock · Release','POST','http://localhost:4002/api/stock/:productId/release'); break;
+    case 'prod-health':   renderSimpleGet(slot, 'http://localhost/api/products/health', 'Product Service Health'); setTopbar('Product · Health Check','GET','http://localhost/api/products/health'); break;
+    case 'prod-get-all':  renderGetAllProducts(slot); setTopbar('Products · Get All','GET','http://localhost/api/products'); break;
+    case 'prod-get-one':  renderGetProductById(slot); setTopbar('Products · Get by ID','GET','http://localhost/api/products/:id'); break;
+    case 'prod-create':   renderCreateProduct(slot);  setTopbar('Products · Create','POST','http://localhost/api/products'); break;
+    case 'prod-update':   renderUpdateProduct(slot);  setTopbar('Products · Update','PATCH','http://localhost/api/products/:id'); break;
+    case 'prod-delete':   renderDeleteProduct(slot);  setTopbar('Products · Delete','DELETE','http://localhost/api/products/:id'); break;
+    case 'prod-toggle':   renderTogglePublish(slot);  setTopbar('Products · Toggle Publish','PATCH','http://localhost/api/products/:id/toggle-publish'); break;
+    case 'stock-update':  renderStockUpdate(slot);    setTopbar('Stock · Update Inventory','PATCH','http://localhost/api/stock/:productId/inventory'); break;
+    case 'stock-reserve': renderStockOp(slot,'reserve','Reserve Stock'); setTopbar('Stock · Reserve','POST','http://localhost/api/stock/:productId/reserve'); break;
+    case 'stock-confirm': renderStockOp(slot,'confirm','Confirm Sale');   setTopbar('Stock · Confirm Sale','POST','http://localhost/api/stock/:productId/confirm'); break;
+    case 'stock-release': renderStockOp(slot,'release','Release Reservation'); setTopbar('Stock · Release','POST','http://localhost/api/stock/:productId/release'); break;
     /* ── ORDER ── */
-    case 'order-create': renderCreateOrder(slot); setTopbar('Orders · Create Order','POST','http://localhost:4003/api/orders'); break;
-    case 'order-my':     renderSimpleAuthGet(slot,'http://localhost:4003/api/orders/me','Get My Orders'); setTopbar('Orders · My Orders','GET','http://localhost:4003/api/orders/me'); break;
-    case 'order-get':    renderGetOrderById(slot); setTopbar('Orders · Get by ID','GET','http://localhost:4003/api/orders/:id'); break;
+    case 'order-create': renderCreateOrder(slot); setTopbar('Orders · Create Order','POST','http://localhost/api/orders'); break;
+    case 'order-my':     renderSimpleAuthGet(slot,'http://localhost/api/orders/me','Get My Orders'); setTopbar('Orders · My Orders','GET','http://localhost/api/orders/me'); break;
+    case 'order-get':    renderGetOrderById(slot); setTopbar('Orders · Get by ID','GET','http://localhost/api/orders/:id'); break;
     /* ── PAYMENT ── */
-    case 'pay-health':   renderSimpleGet(slot,'http://localhost:4004/health','Payment Service Health'); setTopbar('Payment · Health Check','GET','http://localhost:4004/health'); break;
-    case 'pay-intent':   renderCreatePaymentIntent(slot); setTopbar('Payments · Create Intent','POST','http://localhost:4004/api/payments/process'); break;
-    case 'payout-req':   renderPayoutRequest(slot);       setTopbar('Payouts · Request Payout','POST','http://localhost:4004/api/payouts/request'); break;
+    case 'pay-health':   renderSimpleGet(slot,'http://localhost/api/payments/health','Payment Service Health'); setTopbar('Payment · Health Check','GET','http://localhost/api/payments/health'); break;
+    case 'pay-intent':   renderCreatePaymentIntent(slot); setTopbar('Payments · Create Intent','POST','http://localhost/api/payments/process'); break;
+    case 'payout-req':   renderPayoutRequest(slot);       setTopbar('Payouts · Request Payout','POST','http://localhost/api/payouts/request'); break;
+    /* ── EMAIL ── */
+    case 'email-health': renderSimpleGet(slot,'http://localhost/api/email/health','Email Service Health'); setTopbar('Email · Health Check','GET','http://localhost/api/email/health'); break;
+    case 'email-base':   renderSimpleGet(slot,'http://localhost/api/email/','Email Service Base');   setTopbar('Email · Base','GET','http://localhost/api/email/'); break;
+    /* ── CHAT ── */
+    case 'chat-health':  renderSimpleGet(slot,'http://localhost/api/chat/health','Chat Service Health'); setTopbar('Chat · Health Check','GET','http://localhost/api/chat/health'); break;
+    case 'chat-base':    renderSimpleGet(slot,'http://localhost/api/chat/','Chat Service Base');     setTopbar('Chat · Base','GET','http://localhost/api/chat/'); break;
   }
 }
 
@@ -1018,7 +1078,9 @@ async function req(method, url, body, token, isJson=true) {
     showResponse(data, r.status, ms);
     return { ok: r.ok, data, status: r.status };
   } catch(e) {
-    showError(`Network error: ${e.message}`);
+    let extra = '';
+    if (window.location.protocol === 'file:') extra = ' This is likely due to CORS restrictions when running from file://. Try using a local web server.';
+    showError(`Network error: ${e.message}.${extra}`);
     return { ok: false };
   }
 }
@@ -1098,7 +1160,7 @@ function renderAuthRegister(slot) {
       password: document.getElementById('r-pass').value,
       role:     document.getElementById('r-role').value,
     };
-    await req('POST','http://localhost:4001/api/auth/register', body, null);
+    await req('POST','http://localhost/api/auth/register', body, null);
   };
 }
 
@@ -1124,7 +1186,7 @@ function renderAuthLogin(slot) {
       email:    document.getElementById('l-email').value,
       password: document.getElementById('l-pass').value,
     };
-    const res = await req('POST','http://localhost:4001/api/auth/login', body, null);
+    const res = await req('POST','http://localhost/api/auth/login', body, null);
     if (res?.ok && res.data?.accessToken) {
       setToken(res.data.accessToken);
     }
@@ -1139,13 +1201,13 @@ function renderAuthRefresh(slot) {
       <div class="form-section-label">🔄 Refresh</div>
       <div class="form-row">
         <label class="form-label">URL</label>
-        <input id="req-url" class="form-input" value="http://localhost:4001/api/auth/refresh" readonly />
+        <input id="req-url" class="form-input" value="http://localhost/api/auth/refresh" readonly />
       </div>
     </div>
     ${sendFooter('Refresh Token')}
   `;
   window.doSend = async () => {
-    const res = await req('POST','http://localhost:4001/api/auth/refresh', {}, null);
+    const res = await req('POST','http://localhost/api/auth/refresh', {}, null);
     if (res?.ok && res.data?.accessToken) {
       setToken(res.data.accessToken);
     }
@@ -1161,7 +1223,7 @@ function renderAuthLogout(slot) {
     ${sendFooter('Logout')}
   `;
   window.doSend = async () => {
-    const res = await req('POST','http://localhost:4001/api/auth/logout', {}, state.token);
+    const res = await req('POST','http://localhost/api/auth/logout', {}, state.token);
     if (res?.ok) clearToken();
   };
 }
@@ -1184,7 +1246,7 @@ function renderUpdateProfile(slot) {
     const body  = {};
     const name  = document.getElementById('up-name').value;
     if (name) body.name = name;
-    await req('PATCH','http://localhost:4001/api/users/profile', body, token);
+    await req('PATCH','http://localhost/api/users/profile', body, token);
   };
 }
 
@@ -1220,7 +1282,7 @@ function renderGetAllProducts(slot) {
     const l = document.getElementById('gp-limit').value;
     const s = document.getElementById('gp-search').value;
     const c = document.getElementById('gp-cat').value;
-    let url = `http://localhost:4002/api/products?page=${p}&limit=${l}`;
+    let url = `http://localhost/api/products?page=${p}&limit=${l}`;
     if (s) url += `&search=${encodeURIComponent(s)}`;
     if (c) url += `&category=${encodeURIComponent(c)}`;
     await req('GET', url, null, null);
@@ -1242,7 +1304,7 @@ function renderGetProductById(slot) {
   window.doSend = async () => {
     const id = document.getElementById('pid').value.trim();
     if (!id) return alert('Enter a product ID');
-    await req('GET', `http://localhost:4002/api/products/${id}`, null, null);
+    await req('GET', `http://localhost/api/products/${id}`, null, null);
   };
 }
 
@@ -1293,7 +1355,7 @@ function renderCreateProduct(slot) {
       mainImage:    { url: document.getElementById('cp-img').value, localPath: '' },
       subImages:    []
     };
-    await req('POST','http://localhost:4002/api/products', body, token);
+    await req('POST','http://localhost/api/products', body, token);
   };
 }
 
@@ -1336,7 +1398,7 @@ function renderUpdateProduct(slot) {
     if (n) body.name = n;
     if (p) body.price = Number(p);
     if (d) body.description = d;
-    await req('PATCH', `http://localhost:4002/api/products/${id}`, body, token);
+    await req('PATCH', `http://localhost/api/products/${id}`, body, token);
   };
 }
 
@@ -1359,7 +1421,7 @@ function renderDeleteProduct(slot) {
     const id    = document.getElementById('del-id').value.trim();
     if (!id) return alert('Enter product ID');
     if (!confirm('Delete this product?')) return;
-    await req('DELETE', `http://localhost:4002/api/products/${id}`, null, token);
+    await req('DELETE', `http://localhost/api/products/${id}`, null, token);
   };
 }
 
@@ -1380,7 +1442,7 @@ function renderTogglePublish(slot) {
     const token = document.getElementById('req-token').value;
     const id    = document.getElementById('tp-id').value.trim();
     if (!id) return alert('Enter product ID');
-    await req('PATCH', `http://localhost:4002/api/products/${id}/toggle-publish`, {}, token);
+    await req('PATCH', `http://localhost/api/products/${id}/toggle-publish`, {}, token);
   };
 }
 
@@ -1406,7 +1468,7 @@ function renderStockUpdate(slot) {
     const id    = document.getElementById('su-id').value.trim();
     const qty   = Number(document.getElementById('su-qty').value);
     if (!id) return alert('Enter product ID');
-    await req('PATCH', `http://localhost:4002/api/stock/${id}/inventory`, { quantity: qty }, token);
+    await req('PATCH', `http://localhost/api/stock/${id}/inventory`, { quantity: qty }, token);
   };
 }
 
@@ -1431,7 +1493,7 @@ function renderStockOp(slot, op, label) {
     const id    = document.getElementById('sop-id').value.trim();
     const amt   = Number(document.getElementById('sop-amt').value);
     if (!id) return alert('Enter product ID');
-    await req('POST', `http://localhost:4002/api/stock/${id}/${op}`, { amount: amt }, token);
+    await req('POST', `http://localhost/api/stock/${id}/${op}`, { amount: amt }, token);
   };
 }
 
@@ -1461,7 +1523,7 @@ function renderCreateOrder(slot) {
     let items;
     try { items = JSON.parse(document.getElementById('oc-items').value); }
     catch { return alert('Invalid JSON in items array'); }
-    await req('POST','http://localhost:4003/api/orders', { items }, token);
+    await req('POST','http://localhost/api/orders', { items }, token);
   };
 }
 
@@ -1482,7 +1544,7 @@ function renderGetOrderById(slot) {
     const token = document.getElementById('req-token').value;
     const id    = document.getElementById('oi-id').value.trim();
     if (!id) return alert('Enter order ID');
-    await req('GET', `http://localhost:4003/api/orders/${id}`, null, token);
+    await req('GET', `http://localhost/api/orders/${id}`, null, token);
   };
 }
 
@@ -1530,7 +1592,7 @@ function renderCreatePaymentIntent(slot) {
       gateway:  document.getElementById('pi-gw').value,
     };
     if (!body.orderId) return alert('Enter an order ID');
-    await req('POST','http://localhost:4004/api/payments/process', body, token);
+    await req('POST','http://localhost/api/payments/process', body, token);
   };
 }
 
@@ -1561,7 +1623,7 @@ function renderPayoutRequest(slot) {
       amount:   Number(document.getElementById('pr-amount').value),
       currency: document.getElementById('pr-currency').value,
     };
-    await req('POST','http://localhost:4004/api/payouts/request', body, token);
+    await req('POST','http://localhost/api/payouts/request', body, token);
   };
 }
 

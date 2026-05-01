@@ -25,9 +25,7 @@
     "forceConsistentCasingInFileNames": true,
 
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "types": ["node", "express", "cors", "amqplib"],
-    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
+    "isolatedModules": true
   },
 
   "include": [
