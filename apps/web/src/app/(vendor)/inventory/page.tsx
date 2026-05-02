@@ -14,24 +14,87 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2, MoreHorizontal, Package } from "lucide-react";
 import Image from 'next/image';
 
+import { useProductMutations } from '@/modules/products/hooks/useProductMutations';
+import { ProductForm } from '@/modules/products/components/ProductForm';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from 'react';
+import { Toaster } from 'sonner';
+
 export default function InventoryPage() {
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+  
   // Hardcoded vendor ID for current phase (Mocking session)
   const vendorId = "v_123"; 
   const { data, isLoading, error } = useVendorProducts(vendorId);
+  const { createProduct, updateProduct, deleteProduct } = useProductMutations();
 
   const products = data?.docs || [];
 
+  const handleAddProduct = (formData: any) => {
+    createProduct.mutate({
+      ...formData,
+      vendor: vendorId, // Inject vendor ID
+      mainImage: { url: formData.imageUrl }
+    }, {
+      onSuccess: () => setIsAddOpen(false)
+    });
+  };
+
+  const handleUpdateProduct = (formData: any) => {
+    updateProduct.mutate({
+      id: editingProduct._id,
+      data: {
+        ...formData,
+        mainImage: { url: formData.imageUrl }
+      }
+    }, {
+      onSuccess: () => setEditingProduct(null)
+    });
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      deleteProduct.mutate(id);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <Toaster position="top-right" richColors />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Inventory</h1>
           <p className="text-muted-foreground">Manage your product catalog and stock levels.</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Product
-        </Button>
+        
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Product
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Add New Product</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to list a new product in your store.
+              </DialogDescription>
+            </DialogHeader>
+            <ProductForm 
+              onSubmit={handleAddProduct} 
+              isLoading={createProduct.isPending} 
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
@@ -65,7 +128,7 @@ export default function InventoryPage() {
                     <Package className="h-12 w-12 mb-4 opacity-20" />
                     <p className="text-lg font-medium">No products found</p>
                     <p className="text-sm">Start by adding your first product to the catalog.</p>
-                    <Button variant="outline" className="mt-4 gap-2">
+                    <Button variant="outline" className="mt-4 gap-2" onClick={() => setIsAddOpen(true)}>
                       <Plus className="h-4 w-4" />
                       Add First Product
                     </Button>
@@ -99,10 +162,16 @@ export default function InventoryPage() {
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="flex items-center justify-center gap-1">
-                      <Button variant="ghost" size="icon-sm" title="Edit">
+                      <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => setEditingProduct(product)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon-sm" className="text-destructive hover:bg-destructive/10" title="Delete">
+                      <Button 
+                        variant="ghost" 
+                        size="icon-sm" 
+                        className="text-destructive hover:bg-destructive/10" 
+                        title="Delete"
+                        onClick={() => handleDelete(product._id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -113,6 +182,25 @@ export default function InventoryPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editingProduct} onOpenChange={(open) => !open && setEditingProduct(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogDescription>
+              Update the details for "{editingProduct?.name}".
+            </DialogDescription>
+          </DialogHeader>
+          {editingProduct && (
+            <ProductForm 
+              initialData={editingProduct}
+              onSubmit={handleUpdateProduct} 
+              isLoading={updateProduct.isPending} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
