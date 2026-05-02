@@ -10,13 +10,13 @@ See: `.planning/PROJECT.md` (updated 2026-05-02)
 
 ## Current Phase
 
-- **Phase**: Phase 1.1: Next.js Storefront Foundation
-- **Goal**: Establish the fundamental Next.js App Router layout, dynamic grid layouts, and SEO-optimized PDPs.
-- **Status**: Completed
+- **Phase**: Phase 1.2: Vendor Dashboard Initial CRUD
+- **Goal**: Implement the operational core for vendors, including inventory management and dashboard navigation.
+- **Status**: Ready for Execution
 
 ## Active Tasks
 
-- [ ] Run `/gsd-verify-work 1.1` to confirm build quality before starting Phase 1.2.
+- [ ] Run `/gsd-execute-phase 1.2` to build the Vendor Dashboard.
 
 ## Recent Learnings
 
