@@ -10,9 +10,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-02)
 
 ## Current Phase
 
-- **Phase**: Phase 1.2: Vendor Dashboard Initial CRUD
-- **Goal**: Implement the operational core for vendors, including inventory management and dashboard navigation.
-- **Status**: Completed
+- **Phase**: Phase 1.3: Unified Cart & Checkout Flow
+- **Goal**: Implement persistent cart state, multi-step checkout UI, and Stripe integration with real-time stock locking.
+- **Status**: Context Gathered
 
 ## Active Tasks
 
