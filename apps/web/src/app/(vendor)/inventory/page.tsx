@@ -27,6 +27,8 @@ import {
 import { useState } from 'react';
 import { Toaster } from 'sonner';
 
+import { DataTableSkeleton } from '@/modules/vendor/components/DataTableSkeleton';
+
 export default function InventoryPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -111,16 +113,7 @@ export default function InventoryPage() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              [...Array(5)].map((_, i) => (
-                <TableRow key={i} className="animate-pulse">
-                  <TableCell><div className="h-10 w-10 bg-muted rounded" /></TableCell>
-                  <TableCell><div className="h-4 w-32 bg-muted rounded" /></TableCell>
-                  <TableCell><div className="h-4 w-20 bg-muted rounded" /></TableCell>
-                  <TableCell><div className="h-4 w-12 bg-muted rounded ml-auto" /></TableCell>
-                  <TableCell><div className="h-4 w-12 bg-muted rounded ml-auto" /></TableCell>
-                  <TableCell><div className="h-8 w-8 bg-muted rounded mx-auto" /></TableCell>
-                </TableRow>
-              ))
+              <DataTableSkeleton columns={6} />
             ) : products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-64 text-center">
