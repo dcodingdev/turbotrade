@@ -11,9 +11,8 @@ This roadmap organizes the frontend delivery of NexusMarket into focused executi
 - [x] **Phase 1.1: Next.js Storefront Foundation** (Storefront, PDPs, Grid) `[DONE]`
   - Implement responsive grid layouts and SEO-optimized Product Detail Pages (PDPs).
   - Connect dynamic fetching (TanStack Query / Next.js caching) for prices and stock.
-- **Phase 1.2: Vendor Dashboard Initial CRUD**
-  - Set up React/Vite dashboard shell and authentication integration.
-  - Implement basic data-dense tables for listing and editing products.
+- [x] **Phase 1.2: Vendor Dashboard Initial CRUD** `[DONE]`
+  - Implement dashboard shell, inventory tables, and product CRUD with Zod validation.
 - **Phase 1.3: Unified Cart & Checkout Flow**
   - Implement persistent cart state (localStorage / Zustand).
   - Build the multi-step checkout UI.
