@@ -2,7 +2,7 @@
 
 import { useProducts } from '@/modules/products/hooks/useProducts';
 import { MasonryGrid } from '@/components/ui/MasonryGrid';
-import { ProductCard } from '@/components/modules/storefront/ProductCard';
+import { ProductCard } from '@/modules/products/components/ProductCard';
 import Link from 'next/link';
 
 export default function StorefrontPage() {

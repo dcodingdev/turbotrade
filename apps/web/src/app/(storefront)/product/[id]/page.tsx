@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation';
 import { ShoppingCart, ArrowLeft, Store } from 'lucide-react';
 import Link from 'next/link';
 
+import { Button } from '@/components/ui/button';
+
 export default function ProductDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -77,10 +79,10 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="mt-auto space-y-4">
-            <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-[1.02] active:scale-95">
+            <Button size="lg" className="flex w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-lg transition-transform hover:scale-[1.02] active:scale-95">
               <ShoppingCart className="h-5 w-5" />
               Add to Cart
-            </button>
+            </Button>
             <p className="text-center text-xs text-muted-foreground">
               Secure payment processing. Worldwide shipping available.
             </p>

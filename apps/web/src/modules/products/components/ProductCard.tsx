@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { ShoppingCart } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+
 interface ProductCardProps {
   product: {
     id: string;
@@ -31,8 +33,10 @@ export function ProductCard({ product }: ProductCardProps) {
         
         {/* Quick Add Overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-          <button 
-            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
+          <Button 
+            variant="default"
+            size="sm"
+            className="flex items-center gap-2 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
             onClick={(e) => {
               e.stopPropagation();
               console.log('Add to cart', product.id);
@@ -40,7 +44,7 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             <ShoppingCart className="h-4 w-4" />
             Add to Cart
-          </button>
+          </Button>
         </div>
       </div>
 
