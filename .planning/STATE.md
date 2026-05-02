@@ -12,11 +12,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-02)
 
 - **Phase**: Phase 1.1: Next.js Storefront Foundation
 - **Goal**: Establish the fundamental Next.js App Router layout, dynamic grid layouts, and SEO-optimized PDPs.
-- **Status**: Context Gathered
+- **Status**: Ready for Execution
 
 ## Active Tasks
 
-- [ ] Run `/gsd-plan-phase 1.1` to generate the formal Phase 1.1 Execution Plan.
+- [ ] Run `/gsd-execute-phase 1.1` to build the Next.js Storefront Foundation.
 
 ## Recent Learnings
 
