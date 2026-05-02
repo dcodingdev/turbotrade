@@ -99,6 +99,7 @@ export interface IUser extends mongoose.Document {
   password: string;
   name: string;
   role: UserRole;
+  isSuspended: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -126,6 +127,10 @@ const UserSchema = new mongoose.Schema<IUser>(
       type: String, 
       enum: Object.values(UserRole), 
       default: UserRole.CUSTOMER 
+    },
+    isSuspended: {
+      type: Boolean,
+      default: false
     },
   },
   { 

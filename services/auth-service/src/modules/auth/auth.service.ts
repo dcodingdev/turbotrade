@@ -43,6 +43,10 @@ export const validateAndGenerateTokens = async (
     throw new Error('Invalid credentials');
   }
 
+  if ((user as any).isSuspended) {
+    throw new Error('Your account has been suspended');
+  }
+
   const accessToken = jwt.sign(
     { _id: user._id.toString(), role: user.role, name: user.name,   
     email: user.email  },

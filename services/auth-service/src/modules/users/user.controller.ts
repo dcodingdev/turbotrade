@@ -94,3 +94,72 @@ export const updateProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to update profile' });
   }
 };
+
+/**
+ * Admin: Get All Users
+ */
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const { page = 1, limit = 10, search } = req.query;
+    const query: any = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const users = await User.find(query)
+      .select('-password')
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 });
+
+    const total = await User.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: users,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        pages: Math.ceil(total / Number(limit)),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch users' });
+  }
+};
+
+/**
+ * Admin: Toggle User Suspension
+ */
+export const toggleUserSuspension = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const adminId = req.user?._id;
+
+    if (id === adminId?.toString()) {
+      return res.status(400).json({ message: 'You cannot suspend yourself' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isSuspended = !user.isSuspended;
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: `User ${user.isSuspended ? 'suspended' : 'unsuspended'} successfully`,
+      data: user 
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to toggle suspension' });
+  }
+};

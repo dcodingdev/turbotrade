@@ -111,3 +111,94 @@ export const getOrderById = async (req: Request, res: Response) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+
+/**
+ * Get Vendor Orders
+ * Fetches orders that contain at least one item belonging to the vendor.
+ */
+export const getVendorOrders = async (req: Request, res: Response) => {
+  try {
+    const vendorId = req.user?._id;
+    const { page = 1, limit = 10 } = req.query;
+
+    // Filter: at least one item has vendor matching vendorId
+    const query = { "items.vendor": vendorId };
+    
+    const aggregate = Order.aggregate([
+      { $match: query },
+      { $sort: { createdAt: -1 } }
+    ]);
+
+    const result = await (Order as any).aggregatePaginate(aggregate, {
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    res.status(200).json({ success: true, ...result });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Update Order Item Status
+ * Allows vendors to transition the status of their specific items.
+ */
+export const updateItemStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId, productId } = req.params;
+    const { status } = req.body;
+    const vendorId = req.user?._id;
+
+    if (!vendorId) {
+      return res.status(401).json({ success: false, message: "Unauthorized: Vendor ID missing" });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+
+    const item = order.items.find(
+      (i: any) => i.product.toString() === productId && i.vendor.toString() === vendorId.toString()
+    );
+
+    if (!item) {
+      return res.status(403).json({ success: false, message: "Unauthorized: You do not own this item in this order" });
+    }
+
+    item.status = status;
+
+    // Logic: If all items are DELIVERED, set global status to COMPLETED
+    const allDelivered = order.items.every(i => i.status === "DELIVERED");
+    if (allDelivered) {
+      order.orderStatus = "COMPLETED";
+    }
+
+    await order.save();
+
+    res.status(200).json({ success: true, data: order });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Admin: Get All Orders
+ */
+export const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    
+    const aggregate = Order.aggregate([
+      { $sort: { createdAt: -1 } }
+    ]);
+
+    const result = await (Order as any).aggregatePaginate(aggregate, {
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    res.status(200).json({ success: true, ...result });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

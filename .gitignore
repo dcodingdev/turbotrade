@@ -72,3 +72,10 @@ junit.xml
 *.njsproj
 *.sln
 *.sw?
+
+# --- AI Agents & GSD ---
+.agent/
+.gemini/
+.claude/
+.scratch/
+.planning/

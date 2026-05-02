@@ -5,6 +5,7 @@ export interface IOrderItem {
   vendor: mongoose.Types.ObjectId;
   quantity: number;
   priceAtPurchase: number;
+  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 }
 
 // Now 'Document' is recognized as a Type from your repo
@@ -12,7 +13,7 @@ export interface IOrder extends Document {
   customer: mongoose.Types.ObjectId;
   items: IOrderItem[];
   totalAmount: number;
-  orderStatus: "PENDING" | "PAID" | "SHIPPED" | "CANCELLED";
+  orderStatus: "PENDING" | "PAID" | "COMPLETED" | "CANCELLED";
   paymentId?: mongoose.Types.ObjectId;
 }
 
@@ -25,12 +26,17 @@ const orderSchema = new Schema<IOrder>(
         vendor: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
         quantity: { type: Number, required: true, min: 1 },
         priceAtPurchase: { type: Number, required: true },
+        status: {
+          type: String,
+          enum: ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"],
+          default: "PENDING",
+        },
       },
     ],
     totalAmount: { type: Number, required: true },
     orderStatus: {
       type: String,
-      enum: ["PENDING", "PAID", "SHIPPED", "CANCELLED"],
+      enum: ["PENDING", "PAID", "COMPLETED", "CANCELLED"],
       default: "PENDING",
       index: true,
     },

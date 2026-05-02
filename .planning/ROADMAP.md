@@ -13,7 +13,7 @@ This roadmap organizes the frontend delivery of NexusMarket into focused executi
   - Connect dynamic fetching (TanStack Query / Next.js caching) for prices and stock.
 - [x] **Phase 1.2: Vendor Dashboard Initial CRUD** `[DONE]`
   - Implement dashboard shell, inventory tables, and product CRUD with Zod validation.
-- **Phase 1.3: Unified Cart & Checkout Flow**
+- [x] **Phase 1.3: Unified Cart & Checkout Flow** `[DONE]`
   - Implement persistent cart state (localStorage / Zustand).
   - Build the multi-step checkout UI.
   - Integrate Stripe elements and handle real-time stock locking logic (handling 409 Conflicts gracefully).

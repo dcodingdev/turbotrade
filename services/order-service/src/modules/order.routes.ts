@@ -26,6 +26,22 @@ router.route("/me")
    */
   .get(orderController.getMyOrders);
 
+router.route("/vendor")
+  /**
+   * @route   GET /api/v1/orders/vendor
+   * @desc    Get orders containing vendor's items
+   * @access  Private (Vendor)
+   */
+  .get(authorize([UserRole.VENDOR]), orderController.getVendorOrders);
+
+router.route("/:orderId/items/:productId/status")
+  /**
+   * @route   PATCH /api/v1/orders/:orderId/items/:productId/status
+   * @desc    Update status of a specific item (for vendors)
+   * @access  Private (Vendor)
+   */
+  .patch(authorize([UserRole.VENDOR]), orderController.updateItemStatus);
+
 router.route("/:id")
   /**
    * @route   GET /api/v1/orders/:id
@@ -40,8 +56,7 @@ router.route("/:id")
 router.route("/all")
   .get(
     authorize([UserRole.ADMIN]),
-    // You'd need to implement this in your controller
-    // orderController.getAllOrders 
+    orderController.getAllOrders 
   );
 
 export default router;
