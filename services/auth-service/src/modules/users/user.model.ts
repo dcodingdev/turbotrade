@@ -100,6 +100,13 @@ export interface IUser extends mongoose.Document {
   name: string;
   role: UserRole;
   isSuspended: boolean;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -131,6 +138,13 @@ const UserSchema = new mongoose.Schema<IUser>(
     isSuspended: {
       type: Boolean,
       default: false
+    },
+    address: {
+      street: { type: String, trim: true },
+      city: { type: String, trim: true },
+      state: { type: String, trim: true },
+      zip: { type: String, trim: true },
+      country: { type: String, trim: true },
     },
   },
   { 
