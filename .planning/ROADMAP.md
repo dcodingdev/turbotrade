@@ -26,7 +26,7 @@ This roadmap organizes the frontend delivery of NexusMarket into focused executi
 - **Phase 2.1: Order Management & Timelines**
   - Implement order tracking UI for customers.
   - Build interactive Timeline/Gantt views for vendors to visualize and transition order states (`Processing` -> `Shipped` -> `Delivered`).
-- **Phase 2.2: Real-time Chat**
+- [x] **Phase 2.2: Real-time Chat** `[DONE]`
   - Implement WebSocket client connections.
   - Build interactive chat windows for customer-vendor communication.
   - Integrate offline notification alerts.
@@ -41,7 +41,7 @@ This roadmap organizes the frontend delivery of NexusMarket into focused executi
 - **Phase 3.1: Vendor Financials**
   - Build the Automated Revenue Splitting dashboards.
   - Visualize 7-day clearing periods and payout timelines.
-- **Phase 3.2: Advanced Catalog Management**
+- [x] **Phase 3.2: Advanced Catalog Management** (completed 2026-05-03)
   - Implement drag-and-drop media uploads for vendor products.
   - Add bulk CSV export functionality.
 
