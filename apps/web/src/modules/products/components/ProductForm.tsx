@@ -15,7 +15,7 @@ import { ImageUpload } from './ImageUpload';
 const productSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  price: z.coerce.number().positive("Price must be a positive number"),
+  price: z.number().positive("Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
   imageUrl: z.string().url("Please enter a valid image URL").optional().or(z.literal("")),
 });
@@ -55,7 +55,7 @@ export function ProductForm({ initialData, onSubmit, isLoading }: ProductFormPro
   const categoryValue = watch('category');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+    <form onSubmit={handleSubmit((data) => onSubmit(data))} className="space-y-6 py-4">
       <div className="space-y-2">
         <Label htmlFor="name">Product Name</Label>
         <Input 
@@ -75,7 +75,7 @@ export function ProductForm({ initialData, onSubmit, isLoading }: ProductFormPro
             type="number" 
             step="0.01" 
             placeholder="0.00" 
-            {...register('price')} 
+            {...register('price', { valueAsNumber: true })} 
             className={errors.price ? "border-destructive" : ""}
           />
           {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}

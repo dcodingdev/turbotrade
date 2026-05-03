@@ -85,7 +85,7 @@
 
 
 
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import * as productController from "./product.controller.js";
 import { authenticate, authorize } from "@repo/common";
 import { upload, uploadToImageKit } from "@repo/image-storage";
@@ -180,7 +180,7 @@ router.post(
   authorize([UserRole.VENDOR, UserRole.ADMIN]),
   upload.single("image"),
   uploadToImageKit,
-  (req: Request, res: Response) => {
+  (req, res) => {
     const fileData = (req as any).fileData;
     res.status(200).json({ success: true, url: fileData?.image?.[0]?.url });
   }
