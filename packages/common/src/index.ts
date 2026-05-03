@@ -1,6 +1,7 @@
-// Export everything from the auth middleware
 export * from './middleware/auth.middleware.js';
-
-// If you add more shared utilities later (e.g. validation, errors), export them here too:
-// export * from './utils/validator.js';
-// export * from './errors/custom-error.js';
+export * from './middleware/error.js';
+export * from './middleware/validate.js';
+export * from './utils/async-handler.js';
+export * from './utils/http-error.js';
+export * from './utils/auth-helpers.js';
+export * from 'zod';

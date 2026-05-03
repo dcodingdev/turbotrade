@@ -77,5 +77,4 @@ junit.xml
 .agent/
 .gemini/
 .claude/
-.scratch/
-.planning/
+.scratch/

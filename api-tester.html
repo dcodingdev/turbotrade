@@ -688,13 +688,25 @@
     </div>
 
     <!-- Chat Service -->
-    <div class="nav-group-label">💬 Chat Service</div>
+    <div class="nav-group-label">💬 Chat Service :4006</div>
     <div class="nav-item" onclick="showView('chat-health')">
       <div class="method-dot dot-get"></div> Health Check
       <span class="nav-badge">GET</span>
     </div>
-    <div class="nav-item" onclick="showView('chat-base')">
-      <div class="method-dot dot-get"></div> Base Route
+    <div class="nav-item" onclick="showView('chat-conv-create')">
+      <div class="method-dot dot-post"></div> Create Conversation
+      <span class="nav-badge">POST</span>
+    </div>
+    <div class="nav-item" onclick="showView('chat-conv-list')">
+      <div class="method-dot dot-get"></div> My Conversations
+      <span class="nav-badge">GET</span>
+    </div>
+    <div class="nav-item" onclick="showView('chat-msg-send')">
+      <div class="method-dot dot-post"></div> Send Message
+      <span class="nav-badge">POST</span>
+    </div>
+    <div class="nav-item" onclick="showView('chat-msg-list')">
+      <div class="method-dot dot-get"></div> List Messages
       <span class="nav-badge">GET</span>
     </div>
   </aside>
@@ -907,12 +919,12 @@ function copyToken() {
 
 // ── HEALTH CHECKS ──────────────────────────────
 const healthUrls = {
-  auth:    'http://localhost/api/auth/health',
-  prod:    'http://localhost/api/products/health',
-  order:   'http://localhost/api/orders/health',
-  pay:     'http://localhost/api/payments/health',
-  email:   'http://localhost/api/email/health',
-  chat:    'http://localhost/api/chat/health',
+  auth:    'http://localhost:4001/health',
+  prod:    'http://localhost:4002/health',
+  order:   'http://localhost:4003/health',
+  pay:     'http://localhost:4004/health',
+  email:   'http://localhost:4005/health',
+  chat:    'http://localhost:4006/health',
   gateway: 'http://localhost/health',
 };
 async function checkHealth(key) {
@@ -995,8 +1007,11 @@ function showView(id) {
     case 'email-health': renderSimpleGet(slot,'http://localhost/api/email/health','Email Service Health'); setTopbar('Email · Health Check','GET','http://localhost/api/email/health'); break;
     case 'email-base':   renderSimpleGet(slot,'http://localhost/api/email/','Email Service Base');   setTopbar('Email · Base','GET','http://localhost/api/email/'); break;
     /* ── CHAT ── */
-    case 'chat-health':  renderSimpleGet(slot,'http://localhost/api/chat/health','Chat Service Health'); setTopbar('Chat · Health Check','GET','http://localhost/api/chat/health'); break;
-    case 'chat-base':    renderSimpleGet(slot,'http://localhost/api/chat/','Chat Service Base');     setTopbar('Chat · Base','GET','http://localhost/api/chat/'); break;
+    case 'chat-health':      renderSimpleGet(slot, 'http://localhost:4006/health', 'Chat Service Health'); setTopbar('Chat · Health Check','GET','http://localhost:4006/health'); break;
+    case 'chat-conv-create': renderChatCreateConv(slot); setTopbar('Chat · Create Conversation','POST','http://localhost/api/chat/conversations'); break;
+    case 'chat-conv-list':   renderSimpleAuthGet(slot, 'http://localhost:4006/api/chat/conversations', 'List Conversations'); setTopbar('Chat · List Conversations','GET','http://localhost:4006/api/chat/conversations'); break;
+    case 'chat-msg-send':    renderChatSendMessage(slot); setTopbar('Chat · Send Message','POST','http://localhost/api/chat/conversations/:id/messages'); break;
+    case 'chat-msg-list':    renderChatListMessages(slot); setTopbar('Chat · List Messages','GET','http://localhost/api/chat/conversations/:id/messages'); break;
   }
 }
 
@@ -1160,7 +1175,7 @@ function renderAuthRegister(slot) {
       password: document.getElementById('r-pass').value,
       role:     document.getElementById('r-role').value,
     };
-    await req('POST','http://localhost/api/auth/register', body, null);
+    await req('POST','http://localhost:4001/api/auth/register', body, null);
   };
 }
 
@@ -1186,7 +1201,7 @@ function renderAuthLogin(slot) {
       email:    document.getElementById('l-email').value,
       password: document.getElementById('l-pass').value,
     };
-    const res = await req('POST','http://localhost/api/auth/login', body, null);
+    const res = await req('POST','http://localhost:4001/api/auth/login', body, null);
     if (res?.ok && res.data?.accessToken) {
       setToken(res.data.accessToken);
     }
@@ -1207,7 +1222,7 @@ function renderAuthRefresh(slot) {
     ${sendFooter('Refresh Token')}
   `;
   window.doSend = async () => {
-    const res = await req('POST','http://localhost/api/auth/refresh', {}, null);
+    const res = await req('POST','http://localhost:4001/api/auth/refresh', {}, null);
     if (res?.ok && res.data?.accessToken) {
       setToken(res.data.accessToken);
     }
@@ -1223,7 +1238,7 @@ function renderAuthLogout(slot) {
     ${sendFooter('Logout')}
   `;
   window.doSend = async () => {
-    const res = await req('POST','http://localhost/api/auth/logout', {}, state.token);
+    const res = await req('POST','http://localhost:4001/api/auth/logout', {}, state.token);
     if (res?.ok) clearToken();
   };
 }
@@ -1246,7 +1261,7 @@ function renderUpdateProfile(slot) {
     const body  = {};
     const name  = document.getElementById('up-name').value;
     if (name) body.name = name;
-    await req('PATCH','http://localhost/api/users/profile', body, token);
+    await req('PATCH','http://localhost:4001/api/users/profile', body, token);
   };
 }
 
@@ -1624,6 +1639,87 @@ function renderPayoutRequest(slot) {
       currency: document.getElementById('pr-currency').value,
     };
     await req('POST','http://localhost/api/payouts/request', body, token);
+  };
+}
+
+// CHAT CREATE CONVERSATION
+function renderChatCreateConv(slot) {
+  slot.innerHTML = `
+    ${tokenSection()}
+    <div class="form-section">
+      <div class="form-section-label">💬 Conversation</div>
+      <div class="form-row">
+        <label class="form-label">Title (optional)</label>
+        <input id="cc-title" class="form-input" placeholder="Support Chat" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Participant IDs (JSON Array of UUIDs)</label>
+        <textarea id="cc-participants" class="form-textarea" style="min-height:80px;">["USER_UUID_1", "USER_UUID_2"]</textarea>
+      </div>
+    </div>
+    ${sendFooter('Create Conversation')}
+  `;
+  window.doSend = async () => {
+    const token = document.getElementById('req-token').value;
+    let participants;
+    try { participants = JSON.parse(document.getElementById('cc-participants').value); }
+    catch { return alert('Invalid JSON in participants'); }
+    const body = { participantIds: participants };
+    const title = document.getElementById('cc-title').value;
+    if (title) body.title = title;
+    await req('POST','http://localhost:4006/api/chat/conversations', body, token);
+  };
+}
+
+// CHAT SEND MESSAGE
+function renderChatSendMessage(slot) {
+  slot.innerHTML = `
+    ${tokenSection()}
+    <div class="form-section">
+      <div class="form-section-label">✉️ Message</div>
+      <div class="form-row">
+        <label class="form-label">Conversation ID (UUID)</label>
+        <input id="cm-conv-id" class="form-input" placeholder="65a3f1e2..." />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Message Body</label>
+        <textarea id="cm-body" class="form-textarea" placeholder="Hello there!"></textarea>
+      </div>
+    </div>
+    ${sendFooter('Send Message')}
+  `;
+  window.doSend = async () => {
+    const token = document.getElementById('req-token').value;
+    const convId = document.getElementById('cm-conv-id').value.trim();
+    const body = { body: document.getElementById('cm-body').value };
+    if (!convId) return alert('Enter conversation ID');
+    await req('POST', `http://localhost:4006/api/chat/conversations/${convId}/messages`, body, token);
+  };
+}
+
+// CHAT LIST MESSAGES
+function renderChatListMessages(slot) {
+  slot.innerHTML = `
+    ${tokenSection()}
+    <div class="form-section">
+      <div class="form-section-label">📜 Message History</div>
+      <div class="form-row">
+        <label class="form-label">Conversation ID (UUID)</label>
+        <input id="clm-conv-id" class="form-input" placeholder="65a3f1e2..." />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Limit</label>
+        <input id="clm-limit" class="form-input" type="number" value="50" />
+      </div>
+    </div>
+    ${sendFooter('Get Messages')}
+  `;
+  window.doSend = async () => {
+    const token = document.getElementById('req-token').value;
+    const convId = document.getElementById('clm-conv-id').value.trim();
+    const limit = document.getElementById('clm-limit').value;
+    if (!convId) return alert('Enter conversation ID');
+    await req('GET', `http://localhost:4006/api/chat/conversations/${convId}/messages?limit=${limit}`, null, token);
   };
 }
 

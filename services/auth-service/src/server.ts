@@ -114,7 +114,7 @@ import userRoutes from './modules/users/user.routes.js';
 
 const app: Application = express();
 const PORT = process.env.AUTH_PORT || 4001;
-const AUTH_MONGO_URI=process.env.AUTH_MONGO_URI!
+const AUTH_MONGO_URI=process.env.AUTH_MONGO_URI || process.env.MONGO_URI || "";
 let server: Server;
 
 // 1. Standard Middleware

@@ -1,8 +1,14 @@
 import "dotenv/config.js";
 import express, { Application } from "express";
 import cors from "cors";
-import { Server } from "http";
+import { createServer, Server } from "http";
 import logger from "@repo/logger";
+import { connectDatabase } from "@repo/database";
+import { connectRedis } from "@/clients/redis.client";
+import { getMongoClient } from "@/clients/mongo.client";
+import { createSocketServer } from "@/socket/socket.server";
+import conversationRoutes from "./modules/conversation/conversation.routes";
+import messageRoutes from "./modules/message/message.routes";
 
 const app: Application = express();
 const PORT = process.env.CHAT_PORT || 4006;
@@ -24,13 +30,22 @@ router.get("/", (req, res) => {
 
 app.use("/api/chat", router);
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP", service: "chat-service" });
-});
-
 const start = async () => {
   try {
-    server = app.listen(PORT, () => {
+    // Connect to clients
+    await connectDatabase(process.env.MONGO_URI!);
+    await getMongoClient();
+    await connectRedis();
+
+    // Mount Modules
+    app.use("/api/chat/conversations", conversationRoutes);
+    app.use("/api/chat/conversations", messageRoutes); // Message routes are sub-resources of conversations
+
+    // Create HTTP server and attach Socket.io
+    server = createServer(app);
+    createSocketServer(server);
+
+    server.listen(PORT, () => {
       logger.info(`💬 Chat Service running on port ${PORT}`);
     });
   } catch (error) {
