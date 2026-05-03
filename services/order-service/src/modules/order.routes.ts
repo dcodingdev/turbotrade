@@ -42,6 +42,15 @@ router.route("/:orderId/items/:productId/status")
    */
   .patch(authorize([UserRole.VENDOR]), orderController.updateItemStatus);
 
+router.route("/verify-purchase/:productId")
+  /**
+   * @route   GET /api/v1/orders/verify-purchase/:productId
+   * @desc    Check if the user has purchased this product
+   * @access  Private (All Roles)
+   */
+  .get(orderController.verifyPurchase);
+
+
 router.route("/:id")
   /**
    * @route   GET /api/v1/orders/:id

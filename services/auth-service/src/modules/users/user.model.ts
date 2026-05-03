@@ -101,11 +101,11 @@ export interface IUser extends mongoose.Document {
   role: UserRole;
   isSuspended: boolean;
   address?: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
   };
   createdAt: Date;
   updatedAt: Date;

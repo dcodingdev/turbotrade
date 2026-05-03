@@ -1,9 +1,8 @@
-import { mongoose, Schema, Document } from "@repo/database";
+import { mongoose, Schema, Document, AggregatePaginateModel } from "@repo/database";
 
 export interface IReview extends Document {
   product: mongoose.Types.ObjectId;
   customer: mongoose.Types.ObjectId;
-  customerName: string;
   rating: number;
   comment: string;
   isVerified: boolean;
@@ -21,12 +20,8 @@ const reviewSchema = new Schema<IReview>(
     },
     customer: { 
       type: Schema.Types.ObjectId, 
-      ref: "User", 
-      required: true 
-    },
-    customerName: { 
-      type: String, 
-      required: true 
+      required: true, 
+      index: true 
     },
     rating: { 
       type: Number, 
@@ -45,11 +40,13 @@ const reviewSchema = new Schema<IReview>(
     },
   },
   { 
-    timestamps: true 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
-// Prevent multiple reviews for the same product by the same user
-reviewSchema.index({ product: 1, customer: 1 }, { unique: true });
-
-export const Review = mongoose.model<IReview>("Review", reviewSchema);
+export const Review = mongoose.model<IReview, AggregatePaginateModel<IReview>>(
+  "Review",
+  reviewSchema
+);

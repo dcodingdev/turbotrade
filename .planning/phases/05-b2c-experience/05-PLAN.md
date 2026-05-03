@@ -1,13 +1,3 @@
----
-wave: 1
-depends_on: []
-files_modified:
-  - services/auth-service/src/modules/users/user.model.ts
-  - services/order-service/src/modules/order.controller.ts
-  - services/product-service/src/modules/reviews/review.model.ts
-  - apps/web/src/app/(store)/account/layout.tsx
-autonomous: true
----
 # Phase 5: B2C Experience - Plan
 
 ## 1. Overview

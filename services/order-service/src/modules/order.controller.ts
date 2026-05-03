@@ -202,3 +202,27 @@ export const getAllOrders = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+/**
+ * Verify Purchase
+ * Checks if a user has a COMPLETED order containing a specific product.
+ */
+export const verifyPurchase = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id;
+    const { productId } = req.params;
+
+    const order = await Order.findOne({
+      customer: userId,
+      "items.product": productId,
+      $or: [
+        { orderStatus: "COMPLETED" },
+        { "items.status": "DELIVERED" } // Fallback for item-level status
+      ]
+    });
+
+    res.status(200).json({ success: true, verified: !!order });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

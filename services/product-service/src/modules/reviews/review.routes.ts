@@ -2,20 +2,25 @@ import { Router } from "express";
 import * as reviewController from "./review.controller.js";
 import { authenticate } from "@repo/common";
 
-const router = Router();
+// NOTE: Since these routes are mounted at /api/products, 
+// the endpoints here should be designed assuming the path is already nested if necessary.
+// Actually, it's easier to mount them directly on productRoutes.
+// Let's export the router and mount it in product.routes.js or server.js
+const router = Router({ mergeParams: true });
 
-/**
- * @route   GET /api/products/:productId/reviews
- * @desc    Get all reviews for a product
- * @access  Public
- */
-router.get("/:productId/reviews", reviewController.getProductReviews);
-
-/**
- * @route   POST /api/products/:productId/reviews
- * @desc    Create a new review
- * @access  Private (Logged-in customers)
- */
-router.post("/:productId/reviews", authenticate, reviewController.createReview);
+router.route("/")
+  /**
+   * @route   GET /api/products/:productId/reviews
+   * @desc    Get all reviews for a product
+   * @access  Public
+   */
+  .get(reviewController.getProductReviews)
+  
+  /**
+   * @route   POST /api/products/:productId/reviews
+   * @desc    Create a verified review for a product
+   * @access  Private (All Roles)
+   */
+  .post(authenticate, reviewController.createReview);
 
 export default router;

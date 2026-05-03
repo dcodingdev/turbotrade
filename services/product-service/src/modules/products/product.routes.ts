@@ -90,8 +90,11 @@ import * as productController from "./product.controller.js";
 import { authenticate, authorize } from "@repo/common";
 import { upload, uploadToImageKit } from "@repo/image-storage";
 import { UserRole } from "@repo/types";
+import reviewRoutes from "../reviews/review.routes.js";
 
 const router = Router();
+
+router.use("/:productId/reviews", reviewRoutes);
 
 /**
  * @route   GET /api/v1/products

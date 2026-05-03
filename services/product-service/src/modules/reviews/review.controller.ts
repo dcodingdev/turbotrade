@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Review } from "./review.model.js";
-import axios from "axios";
+import { Product } from "../products/product.model.js";
 import logger from "@repo/logger";
 
 const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || "http://localhost:4003/api/v1/orders";
@@ -9,46 +9,64 @@ export const createReview = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const { rating, comment } = req.body;
-    const userId = req.user?._id;
-    const userName = req.user?.name;
+    const customerId = req.user?._id;
 
-    if (!userId) {
+    if (!customerId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // 1. Verify Purchaser Status (Call Order Service)
-    let isVerified = false;
-    try {
-      const response = await axios.get(`${ORDER_SERVICE_URL}/me`, {
-        headers: { Authorization: req.headers.authorization },
-      });
-
-      // Check if any completed order contains this product
-      const orders = response.data.docs || []; // aggregatePaginate returns 'docs'
-      isVerified = orders.some((order: any) => 
-        order.orderStatus === "COMPLETED" && 
-        order.items.some((item: any) => item.product.toString() === productId)
-      );
-    } catch (error: any) {
-      logger.warn({ err: error }, "Failed to verify purchaser status via order-service");
-      // Continue anyway, but isVerified remains false
+    // 1. Verify Product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
     }
 
-    // 2. Create Review
+    // 2. Verify Purchase (Call order-service)
+    let isVerified = false;
+    try {
+      // Forward the auth header so the order service knows who is asking
+      const authHeader = req.headers.authorization || (req.cookies?.accessToken ? `Bearer ${req.cookies.accessToken}` : undefined);
+      
+      const verifyRes = await fetch(`${ORDER_SERVICE_URL}/verify-purchase/${productId}`, {
+        headers: {
+          ...(authHeader && { Authorization: authHeader })
+        }
+      });
+      
+      const data = await verifyRes.json();
+      isVerified = data?.verified === true;
+    } catch (error: any) {
+      logger.error({ err: error.message }, "Failed to verify purchase with order-service");
+      return res.status(403).json({ 
+        success: false, 
+        message: "You must have a completed order for this product to leave a review." 
+      });
+    }
+
+    if (!isVerified) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "You must have a completed order for this product to leave a review." 
+      });
+    }
+
+    // 3. Create Review
+    // Check if user already reviewed
+    const existingReview = await Review.findOne({ product: productId, customer: customerId });
+    if (existingReview) {
+      return res.status(400).json({ success: false, message: "You have already reviewed this product." });
+    }
+
     const review = await Review.create({
       product: productId,
-      customer: userId,
-      customerName: userName,
+      customer: customerId,
       rating,
       comment,
-      isVerified,
+      isVerified: true // Set to true since we verified it
     });
 
     res.status(201).json({ success: true, data: review });
   } catch (error: any) {
-    if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: "You have already reviewed this product" });
-    }
     logger.error({ err: error }, "Failed to create review");
     res.status(500).json({ success: false, message: error.message });
   }
@@ -57,9 +75,22 @@ export const createReview = async (req: Request, res: Response) => {
 export const getProductReviews = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    const reviews = await Review.find({ product: productId }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: reviews });
+    const { page = 1, limit = 10 } = req.query;
+
+    const query = { product: new (require("mongoose")).Types.ObjectId(productId) };
+    const aggregate = Review.aggregate([
+      { $match: query },
+      { $sort: { createdAt: -1 } }
+    ]);
+
+    const result = await (Review as any).aggregatePaginate(aggregate, {
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    res.status(200).json({ success: true, ...result });
   } catch (error: any) {
+    logger.error({ err: error }, "Failed to fetch reviews");
     res.status(500).json({ success: false, message: error.message });
   }
 };

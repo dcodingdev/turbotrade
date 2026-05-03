@@ -1,4 +1,4 @@
-import { AccountSidebar } from "@/modules/customer/components/AccountSidebar";
+import { AccountSidebar } from "@/modules/account/components/AccountSidebar";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { RoleGuard } from "@/components/auth/RoleGuard";
 import { UserRole } from "@repo/types";
