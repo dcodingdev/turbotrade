@@ -25,7 +25,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from 'react';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
+import { useSelection } from '@/hooks/useSelection';
+import { Checkbox } from '@/components/ui/checkbox';
+import { FileDown, DownloadCloud } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 import { DataTableSkeleton } from '@/modules/vendor/components/DataTableSkeleton';
 
@@ -36,9 +40,32 @@ export default function InventoryPage() {
   // Hardcoded vendor ID for current phase (Mocking session)
   const vendorId = "v_123"; 
   const { data, isLoading, error } = useVendorProducts(vendorId);
-  const { createProduct, updateProduct, deleteProduct } = useProductMutations();
-
   const products = data?.docs || [];
+  const { selectedIds, toggle, selectAll, clear, isSelected, count } = useSelection();
+
+  const handleExport = (ids?: string[]) => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+    let url = `${baseUrl}/products/export?vendorId=${vendorId}`;
+    
+    // Add auth token if needed? The backend authenticate middleware uses cookie or header.
+    // window.open doesn't send custom headers. I might need a more complex download logic
+    // if auth is strictly required via header. But if it's cookie-based, it works.
+    // If not, I can use a hidden form or fetch blob.
+    
+    if (ids && ids.length > 0) {
+      ids.forEach(id => url += `&ids=${id}`);
+    }
+    
+    // Using a link click for better download behavior
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `products-${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    
+    toast.success(`Exporting ${ids ? ids.length : 'all'} products...`);
+  };
 
   const handleAddProduct = (formData: any) => {
     createProduct.mutate({
@@ -77,32 +104,78 @@ export default function InventoryPage() {
           <p className="text-muted-foreground">Manage your product catalog and stock levels.</p>
         </div>
         
-        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>
-                Fill in the details below to list a new product in your store.
-              </DialogDescription>
-            </DialogHeader>
-            <ProductForm 
-              onSubmit={handleAddProduct} 
-              isLoading={createProduct.isPending} 
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => handleExport()}>
+            <FileDown className="h-4 w-4" />
+            Export All
+          </Button>
+          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Product
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Add New Product</DialogTitle>
+                <DialogDescription>
+                  Fill in the details below to list a new product in your store.
+                </DialogDescription>
+              </DialogHeader>
+              <ProductForm 
+                onSubmit={handleAddProduct} 
+                isLoading={createProduct.isPending} 
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
+
+      {/* Selection Action Bar */}
+      {selectedIds.length > 0 && (
+        <div className="sticky top-4 z-50 flex items-center justify-between gap-4 px-6 py-3 bg-primary text-primary-foreground rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center gap-2">
+            <span className="flex items-center justify-center h-6 w-6 rounded-full bg-primary-foreground text-primary text-xs font-bold">
+              {selectedIds.length}
+            </span>
+            <span className="text-sm font-medium">products selected</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              className="gap-2 h-8"
+              onClick={() => handleExport(selectedIds)}
+            >
+              <DownloadCloud className="h-4 w-4" />
+              Export Selected
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 hover:bg-primary-foreground/10 text-primary-foreground"
+              onClick={clear}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="w-[40px]">
+                <Checkbox 
+                  checked={products.length > 0 && selectedIds.length === products.length}
+                  onCheckedChange={(checked) => {
+                    if (checked) selectAll(products.map(p => p._id));
+                    else clear();
+                  }}
+                />
+              </TableHead>
               <TableHead className="w-[80px]">Image</TableHead>
               <TableHead>Product Name</TableHead>
               <TableHead>Category</TableHead>
@@ -130,7 +203,16 @@ export default function InventoryPage() {
               </TableRow>
             ) : (
               products.map((product) => (
-                <TableRow key={product._id} className="hover:bg-muted/30 transition-colors">
+                <TableRow key={product._id} className={cn(
+                  "hover:bg-muted/30 transition-colors",
+                  isSelected(product._id) && "bg-primary/5"
+                )}>
+                  <TableCell>
+                    <Checkbox 
+                      checked={isSelected(product._id)}
+                      onCheckedChange={() => toggle(product._id)}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="relative h-10 w-10 overflow-hidden rounded border border-border bg-muted">
                       <Image 
