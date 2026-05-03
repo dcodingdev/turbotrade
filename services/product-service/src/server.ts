@@ -107,6 +107,7 @@ import { initProductConsumers} from "./config/rabbit-consumer.js";
 // Routes
 import stockroutes from "./modules/stock/stock.routes.js";
 import productRoutes from "./modules/products/product.routes.js";
+import reviewRoutes from "./modules/reviews/review.routes.js";
 
 const app: Application = express();
 const PORT = process.env.PRODUCT_PORT || 4002;
@@ -144,6 +145,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use("/api/products", productRoutes);
+app.use("/api/products", reviewRoutes);
 app.use("/api/stock", stockroutes); // New Stock endpoints
 
 /**
