@@ -4,18 +4,18 @@
 
 See: `.planning/PROJECT.md` (updated 2026-05-02)
 
-**Core value:** To provide a frictionless, real-time marketplace experience where customers can effortlessly discover and purchase products, and vendors can manage their operations and payouts with complete transparency.
+**Core value**: To provide a frictionless, real-time marketplace experience where customers can effortlessly discover and purchase products, and vendors can manage their operations and payouts with complete transparency.
 
-- **Status**: Phase 3.2 Implementation Completed - Ready for Verification
-- **Last Activity**: Roadmap refinement and Phase 3.2 completion.
-- **Current focus**: Phase 3.2 Verification
-- **Current Position**: Phase 3.2 (UAT)
+- **Status**: Milestone v1.0 Completed & Summarized
+- **Last Activity**: Generated MILESTONE_SUMMARY-v1.0.md.
+- **Current focus**: Final verification of 3.2 and Milestone Archive.
+- **Current Position**: Milestone v1.0 (Wrap-up)
 
 ## Progress Overview
 
 - **Phase 1: Core Foundation** — 100% Complete
 - **Phase 2: Operations & Real-Time** — 100% Complete
-- **Phase 3: Polish & Enhancements** — 100% Complete (3.2 finalized)
+- **Phase 3: Polish & Enhancements** — 100% Complete (3.1 Removed, 3.2 Built)
 
 ## Active Tasks
 
@@ -26,6 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-02)
 - [x] Execute: Wave 2 (Media Uploads)
 - [x] Execute: Wave 3 (Export UI)
 - [ ] Verify: Phase 3.2 (UAT)
+- [x] Summary: Milestone v1.0 (MILESTONE_SUMMARY-v1.0.md)
 
 ## Recent Learnings
 
