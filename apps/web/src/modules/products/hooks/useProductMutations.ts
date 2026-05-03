@@ -51,9 +51,21 @@ export function useProductMutations() {
     },
   });
 
+  const uploadImageMutation = useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append('image', file);
+      return apiClient('/products/upload', {
+        method: 'POST',
+        body: formData,
+      });
+    },
+  });
+
   return {
     createProduct: createMutation,
     updateProduct: updateMutation,
     deleteProduct: deleteMutation,
+    uploadImage: uploadImageMutation,
   };
 }
