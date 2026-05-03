@@ -38,9 +38,6 @@ This roadmap organizes the frontend delivery of NexusMarket into focused executi
 ## Phase 3: Polish & Enhancements (Could Haves)
 *Refine the experience and add quality-of-life features.*
 
-- **Phase 3.1: Vendor Financials**
-  - Build the Automated Revenue Splitting dashboards.
-  - Visualize 7-day clearing periods and payout timelines.
 - [x] **Phase 3.2: Advanced Catalog Management**
  (completed 2026-05-03)
   - Implement drag-and-drop media uploads for vendor products.
