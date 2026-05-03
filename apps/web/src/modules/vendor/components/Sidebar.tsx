@@ -6,6 +6,7 @@ import {
   LayoutDashboard, 
   Package, 
   Receipt, 
+  MessageSquare,
   Settings, 
   Store,
   ChevronLeft,
@@ -18,6 +19,7 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { name: 'Dashboard', href: '/vendor', icon: LayoutDashboard },
   { name: 'Inventory', href: '/vendor/inventory', icon: Package },
+  { name: 'Messages', href: '/vendor/chat', icon: MessageSquare },
   { name: 'Billing', href: '/vendor/billing', icon: Receipt },
   { name: 'Settings', href: '/vendor/settings', icon: Settings },
 ];

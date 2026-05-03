@@ -1,6 +1,7 @@
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { ChatBubble } from "@/modules/chat/components/ChatBubble";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,6 +24,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           &copy; {new Date().getFullYear()} NexusMarket. All rights reserved.
         </div>
       </footer>
+      <ChatBubble
+        conversationId={undefined}
+        token={undefined}
+        currentUserId={undefined}
+      />
     </>
   );
 }
