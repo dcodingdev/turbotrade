@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Product } from '../hooks/useProducts';
 import { Loader2 } from 'lucide-react';
+import { ImageUpload } from './ImageUpload';
 
 const productSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -111,15 +112,22 @@ export function ProductForm({ initialData, onSubmit, isLoading }: ProductFormPro
         {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="imageUrl">Main Image URL</Label>
-        <Input 
-          id="imageUrl" 
-          placeholder="https://example.com/image.jpg" 
-          {...register('imageUrl')} 
-          className={errors.imageUrl ? "border-destructive" : ""}
+      <div className="space-y-4">
+        <Label>Product Image</Label>
+        <ImageUpload 
+          value={watch('imageUrl')} 
+          onChange={(url) => setValue('imageUrl', url, { shouldValidate: true })} 
         />
-        {errors.imageUrl && <p className="text-xs text-destructive">{errors.imageUrl.message}</p>}
+        <div className="space-y-2">
+          <Label htmlFor="imageUrl" className="text-xs text-muted-foreground italic">Or enter image URL manually</Label>
+          <Input 
+            id="imageUrl" 
+            placeholder="https://example.com/image.jpg" 
+            {...register('imageUrl')} 
+            className={errors.imageUrl ? "border-destructive" : ""}
+          />
+          {errors.imageUrl && <p className="text-xs text-destructive">{errors.imageUrl.message}</p>}
+        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
