@@ -157,4 +157,16 @@ router.patch(
   productController.togglePublishStatus
 );
 
+/**
+ * @route   GET /api/v1/products/export
+ * @desc    Export products as CSV
+ * @access  Private (Vendor, Admin)
+ */
+router.get(
+  "/export",
+  authenticate,
+  authorize([UserRole.VENDOR, UserRole.ADMIN]),
+  productController.exportProducts
+);
+
 export default router;

@@ -592,3 +592,71 @@ export const togglePublishStatus = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+/**
+ * EXPORT PRODUCTS AS CSV
+ */
+export const exportProducts = async (req: Request, res: Response) => {
+  const route = logRoute(req);
+  try {
+    logger.info(route);
+
+    // Only allow vendors to export their own products, or admins to export any
+    const vendorId = req.query.vendorId as string;
+    const ids = req.query.ids as string | string[];
+
+    const isAdmin = req.user?.role === UserRole.ADMIN;
+    const isVendor = req.user?.role === UserRole.VENDOR;
+
+    if (!isAdmin && isVendor && vendorId !== req.user?._id) {
+      logger.warn(`${route} - Unauthorized export attempt`);
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+
+    const query: any = {};
+    if (vendorId) query["vendor.id"] = vendorId;
+    if (ids) {
+      query._id = { $in: Array.isArray(ids) ? ids : [ids] };
+    }
+
+    const products = await Product.find(query).sort({ createdAt: -1 }).lean();
+
+    const headers = [
+      "_id",
+      "name",
+      "sku",
+      "category",
+      "price",
+      "isDraft",
+      "mainImage",
+      "subImages",
+      "createdAt"
+    ];
+
+    const rows = products.map((p: any) => {
+      const row = [
+        p._id,
+        `"${p.name.replace(/"/g, '""')}"`,
+        p.sku || "",
+        p.category || "",
+        p.price,
+        p.isDraft,
+        p.mainImage?.url || "",
+        (p.subImages || []).map((img: any) => img.url).join(";"),
+        p.createdAt ? new Date(p.createdAt).toISOString() : ""
+      ];
+      return row.join(",");
+    });
+
+    const csv = [headers.join(","), ...rows].join("\n");
+
+    logger.info(`${route} - Exported ${products.length} products`);
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename=products-${vendorId || "all"}-${Date.now()}.csv`);
+    res.status(200).send(csv);
+  } catch (error: any) {
+    logger.error(`${route} - Export failed: ${error.message}`);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
