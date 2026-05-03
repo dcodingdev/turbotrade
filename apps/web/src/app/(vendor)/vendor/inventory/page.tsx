@@ -40,6 +40,7 @@ export default function InventoryPage() {
   // Hardcoded vendor ID for current phase (Mocking session)
   const vendorId = "v_123"; 
   const { data, isLoading, error } = useVendorProducts(vendorId);
+  const { createProduct, updateProduct, deleteProduct } = useProductMutations();
   const products = data?.docs || [];
   const { selectedIds, toggle, selectAll, clear, isSelected, count } = useSelection();
 
