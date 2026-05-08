@@ -207,7 +207,7 @@ const start = async () => {
     /**
      * Start HTTP Server
      */
-    server = app.listen(PORT, () => {
+    server = app.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`📦 Product & Stock Service running on port ${PORT}`);
     });
 

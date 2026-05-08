@@ -56,7 +56,7 @@ export default function StorefrontPage() {
       </header>
 
       <MasonryGrid>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <Link key={product._id} href={`/product/${product._id}`}>
             <ProductCard 
               product={{
@@ -66,6 +66,7 @@ export default function StorefrontPage() {
                 mainImage: product.mainImage,
                 vendor: product.vendor
               }} 
+              priority={index < 8}
             />
           </Link>
         ))}

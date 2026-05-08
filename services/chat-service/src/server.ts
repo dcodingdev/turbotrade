@@ -50,7 +50,7 @@ const start = async () => {
     server = createServer(app);
     createSocketServer(server);
 
-    server.listen(PORT, () => {
+    server.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`💬 Chat Service running on port ${PORT}`);
     });
   } catch (error) {

@@ -191,7 +191,7 @@ const start = async () => {
     //     await connectRMQ(process.env.RABBITMQ_URL);
     // }
     
-    server = app.listen(PORT, () => {
+    server = app.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`Auth Service active on port ${PORT}`);
     });
 

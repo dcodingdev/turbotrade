@@ -30,7 +30,7 @@ app.get("/health", (req, res) => {
 
 const start = async () => {
   try {
-    server = app.listen(PORT, () => {
+    server = app.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`📧 Email Service running on port ${PORT}`);
     });
   } catch (error) {

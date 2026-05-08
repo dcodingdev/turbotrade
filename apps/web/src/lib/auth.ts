@@ -17,6 +17,7 @@ export const authClient = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
+      credentials: 'include',
     });
 
     if (!res.ok) {
@@ -35,6 +36,7 @@ export const authClient = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (!res.ok) {
@@ -51,6 +53,7 @@ export const authClient = {
   async refresh(): Promise<{ accessToken: string }> {
     const res = await fetch(`${AUTH_URL}/refresh`, {
       method: 'POST',
+      credentials: 'include',
     });
 
     if (!res.ok) {
@@ -60,12 +63,12 @@ export const authClient = {
     return res.json();
   },
 
-  /**
-   * Logout and clear cookies
-   */
   async logout(): Promise<void> {
     await fetch(`${AUTH_URL}/logout`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+      credentials: 'include',
     });
   },
 };

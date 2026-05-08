@@ -191,7 +191,7 @@ const start = async () => {
     await connectDatabase(PAYMENT_MONGO_URI);
     await connectRMQ(process.env.RABBITMQ_URL);
 
-    server = app.listen(PORT, () => {
+    server = app.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`💸 Payment Service running on port ${PORT}`);
     });
 

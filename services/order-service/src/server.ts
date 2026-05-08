@@ -73,7 +73,7 @@ const start = async () => {
     // Initialize RabbitMQ Listeners for Payment Success/Fail
     await initOrderConsumers();
 
-    server = app.listen(PORT, () => {
+    server = app.listen(Number(PORT), "0.0.0.0", () => {
       logger.info(`🛒 Order Service running on port ${PORT}`);
     });
 

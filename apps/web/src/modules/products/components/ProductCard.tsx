@@ -17,9 +17,10 @@ interface ProductCardProps {
       name: string;
     };
   };
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1 mb-8">
       {/* Image Container */}
@@ -28,6 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.mainImage.url || '/placeholder-product.jpg'}
           alt={product.name}
           fill
+          priority={priority}
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
         
